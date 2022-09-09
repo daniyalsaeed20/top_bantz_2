@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "577909850842",
+    "firebase_url": "https://top-bantz-db7af-default-rtdb.firebaseio.com",
+    "project_id": "top-bantz-db7af",
+    "storage_bucket": "top-bantz-db7af.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:577909850842:android:11736f0210c09f09595be3",
+        "android_client_info": {
+          "package_name": "com.example.top_bantz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "577909850842-prv1cfneaofvml77cj1tq4t13avfbchq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.top_bantz",
+            "certificate_hash": "553a44823c3490d5289c6ed4fb12366587a9aabc"
+          }
+        },
+        {
+          "client_id": "577909850842-sr8970fe8bho0omva8ts4r9p5sp7nva3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9BbyuytoCbp15jlpRnPvARffV9TL0-s4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "577909850842-sr8970fe8bho0omva8ts4r9p5sp7nva3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

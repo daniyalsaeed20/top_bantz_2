@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>577909850842-b6kvbjlfa838tglaugdl6ol462sjs28g.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.577909850842-b6kvbjlfa838tglaugdl6ol462sjs28g</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>577909850842-prv1cfneaofvml77cj1tq4t13avfbchq.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBLwgMmaVDGPcBwmueokmkeS38wuqeRB7o</string>
+	<key>GCM_SENDER_ID</key>
+	<string>577909850842</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.topBantz2</string>
+	<key>PROJECT_ID</key>
+	<string>top-bantz-db7af</string>
+	<key>STORAGE_BUCKET</key>
+	<string>top-bantz-db7af.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:577909850842:ios:c14e034f2f3996c3595be3</string>
+	<key>DATABASE_URL</key>
+	<string>https://top-bantz-db7af-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>
