@@ -156,16 +156,16 @@ class _UiState extends State<Ui> {
                     CustomButton(
                         text: 'Continue',
                         onTap: () {
-                          // if (_signupKey.currentState!.validate()) {
-                          //   _getRegistrationData(
-                          //     contactNumber: contactNumberController.text,
-                          //     dateOfBirth: dateOfBirthController.text,
-                          //     email: emailController.text,
-                          //     fullName: fullNameController.text,
-                          //     password: passwordController.text,
-                          //   );
-                          Get.to(() => SelectTeamScreen());
-                          // }
+                          if (_signupKey.currentState!.validate()) {
+                            _getRegistrationData(
+                              contactNumber: contactNumberController.text,
+                              dateOfBirth: dateOfBirthController.text,
+                              email: emailController.text,
+                              fullName: fullNameController.text,
+                              password: passwordController.text,
+                            );
+                          Get.to(() => const SelectTeamScreen());
+                          }
                         }),
                   ],
                 ),

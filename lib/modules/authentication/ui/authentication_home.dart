@@ -5,11 +5,10 @@ import 'package:get/get.dart';
 import 'package:top_bantz_2/constants/custom_colors.dart';
 import 'package:top_bantz_2/constants/design.dart';
 import 'package:top_bantz_2/global/global_view/custom_button.dart';
-import 'package:top_bantz_2/global/global_view/custom_loader.dart';
 import 'package:top_bantz_2/global/global_view/custom_text.dart';
 import 'package:top_bantz_2/modules/authentication/ui/login/login_screen.dart';
 import 'package:top_bantz_2/modules/authentication/ui/sign_up/sign_up_screen.dart';
-import 'package:top_bantz_2/modules/home/home_navifation_page.dart';
+import 'package:top_bantz_2/modules/home/home_navigation_page.dart';
 import 'package:top_bantz_2/repositories/user_repository.dart';
 
 class AuthenticationHome extends StatelessWidget {
@@ -78,7 +77,7 @@ class Ui extends StatelessWidget {
                   width: 253.w,
                   child: CustomText(
                     text:
-                        'Discuss your favourite football teams with fellow supporters and receive the latest game updates.',
+                        'Discuss your favorite football teams with fellow supporters and receive the latest game updates.',
                     color: CustomColors.textMediumColor,
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w400,

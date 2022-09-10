@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -6,7 +8,6 @@ import 'package:top_bantz_2/constants/design.dart';
 import 'package:top_bantz_2/global/global_view/custom_button.dart';
 import 'package:top_bantz_2/global/global_view/custom_text.dart';
 import 'package:top_bantz_2/modules/authentication/auth_controller.dart';
-import 'package:top_bantz_2/modules/authentication/ui/sign_up/create_avatar.dart';
 import 'package:top_bantz_2/modules/authentication/ui/sign_up/select_subscription_screen.dart';
 
 class SelectTeamScreen extends StatefulWidget {
@@ -79,7 +80,7 @@ class _SelectTeamScreenState extends State<SelectTeamScreen> {
                 CustomButton(
                   text: 'Continue',
                   onTap: () {
-                    Get.to(() => SelectSubscriptionScreen());
+                    Get.to(() => const SelectSubscriptionScreen());
                   },
                 )
               ],

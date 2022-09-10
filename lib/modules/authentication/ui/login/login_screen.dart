@@ -11,7 +11,7 @@ import 'package:top_bantz_2/global/global_view/custom_text.dart';
 import 'package:top_bantz_2/global/global_view/custom_text_field.dart';
 import 'package:top_bantz_2/modules/authentication/ui/sign_up/sign_up_screen.dart';
 import 'package:top_bantz_2/modules/authentication/ui/verification_screen.dart';
-import 'package:top_bantz_2/modules/home/home_navifation_page.dart';
+import 'package:top_bantz_2/modules/home/home_navigation_page.dart';
 import 'package:top_bantz_2/repositories/user_repository.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -67,7 +67,7 @@ class Ui extends StatelessWidget {
             ),
             Column(
               children: [
-                Spacer(),
+                const Spacer(),
                 Container(
                   height: 499.h,
                   decoration: BoxDecoration(
@@ -198,12 +198,6 @@ class Ui extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void _obscureText(
-      /*{required PasswordState state, required BuildContext context}*/) {
-    if (true) {
-    } else {}
   }
 }
 

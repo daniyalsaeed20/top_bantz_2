@@ -112,16 +112,16 @@ class CardNumberFormatter extends TextInputFormatter {
   TextEditingController controller;
   @override
   TextEditingValue formatEditUpdate(
-    TextEditingValue previousValue,
-    TextEditingValue nextValue,
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
   ) {
-    var inputText = nextValue.text;
+    var inputText = newValue.text;
 
-    if (nextValue.selection.baseOffset == 0) {
-      return nextValue;
+    if (newValue.selection.baseOffset == 0) {
+      return newValue;
     }
 
-    var bufferString = new StringBuffer();
+    var bufferString = StringBuffer();
     for (int i = 0; i < inputText.length; i++) {
       bufferString.write(inputText[i]);
       var nonZeroIndexValue = i + 1;
@@ -131,7 +131,7 @@ class CardNumberFormatter extends TextInputFormatter {
     }
 
     var string = bufferString.toString();
-    controller.text = nextValue
+    controller.text = newValue
         .copyWith(
           text: string,
           selection: TextSelection.collapsed(
@@ -139,7 +139,7 @@ class CardNumberFormatter extends TextInputFormatter {
           ),
         )
         .text;
-    return nextValue.copyWith(
+    return newValue.copyWith(
       text: string,
       selection: TextSelection.collapsed(
         offset: string.length,

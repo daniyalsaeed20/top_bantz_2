@@ -8,8 +8,6 @@ class UserServices {
   /* -------------------------------------------------------------------------- */
   /*                                  Variables                                 */
   /* -------------------------------------------------------------------------- */
-
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final CollectionReference _userCollection =
       FirebaseFirestore.instance.collection('users');
   // final String? _userId = FirebaseAuth.instance.currentUser!.uid;

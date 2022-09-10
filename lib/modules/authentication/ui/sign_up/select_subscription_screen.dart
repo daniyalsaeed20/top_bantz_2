@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -17,7 +19,6 @@ class SelectSubscriptionScreen extends StatefulWidget {
 }
 
 class _SelectSubscriptionScreenState extends State<SelectSubscriptionScreen> {
-  final AuthController _authController = Get.put(AuthController());
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +52,7 @@ class _SelectSubscriptionScreenState extends State<SelectSubscriptionScreen> {
                 CustomButton(
                   text: 'Continue',
                   onTap: () {
-                    Get.to(() => CreateAvatar());
+                    Get.to(() => const CreateAvatar());
                   },
                 )
               ],
@@ -125,7 +126,7 @@ class SubscriptionTypeTile extends StatelessWidget {
                             fontSize: 36.sp,
                             fontWeight: FontWeight.w600,
                           ),
-                          Spacer(),
+                          const Spacer(),
                           if (index == 1)
                             CustomText(
                               text: '£20 / mo',
