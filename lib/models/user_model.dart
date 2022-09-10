@@ -2,11 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
   UserModel({
-    required this.userName,
-    required this.email,
-    required this.dateOfBirth,
-    required this.contactNumber,
-    required this.userId,
+    this.userName = '',
+    this.email = '',
+    this.dateOfBirth = '',
+    this.contactNumber = '',
+    this.userId = '',
   });
 
   String userName;

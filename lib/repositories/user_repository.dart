@@ -14,6 +14,7 @@ class UserRepository {
 
   UserServices _userServices;
   late UserModel _userModel;
+  late String password;
 
   /* -------------------------------------------------------------------------- */
   /*                                    Lists                                   */
@@ -35,24 +36,24 @@ class UserRepository {
   }
 
   registerWithCredentials({required UserModel userModel, password}) async {
-    return await FirebaseAuth.instance
+    UserCredential credentials = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(
-            email: userModel.email, password: password)
-        .then(
-      (UserCredential credentials) async {
-        _userModel = userModel;
-        userModel.userId = credentials.user!.uid;
-        await _userServices.setUserDocument(
-          userModel: userModel,
-        );
-      },
+            email: userModel.email, password: password);
+    _userModel = userModel;
+    userModel.userId = credentials.user!.uid;
+    await _userServices.setUserDocument(
+      userModel: userModel,
     );
   }
 
   signInWithCredentials(
       {required String email, required String password}) async {
-    return await FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: email, password: password);
+    try {
+      return await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+    } catch (err) {
+      print(err);
+    }
   }
 
   /* ------------------------------ Verification ------------------------------ */

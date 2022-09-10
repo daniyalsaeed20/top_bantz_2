@@ -5,8 +5,8 @@ class CustomColors {
   /*                                    Major                                   */
   /* -------------------------------------------------------------------------- */
 
-  static const Color backGroundColor = Color.fromRGBO(255, 255, 255, 1);
-  static const Color foreGroundColor = Color.fromRGBO(63, 90, 102, 1);
+  static const Color backGroundColor = Color.fromARGB(255, 0, 0, 0);
+  static const Color foreGroundColor = Color(0xff212020);
 
   /* -------------------------------------------------------------------------- */
   /*                                   Button                                   */
@@ -20,9 +20,9 @@ class CustomColors {
   /*                                    Text                                    */
   /* -------------------------------------------------------------------------- */
 
-  static const Color textLightColor = Color.fromRGBO(168, 166, 167, 1);
+  static const Color textYellowColor = Color(0xffE0B108);
   static const Color textWhiteColor = Color.fromRGBO(255, 255, 255, 1);
-  static const Color textMediumColor = Color.fromRGBO(63, 90, 102, 1);
+  static const Color textMediumColor = Color(0xff65656B);
   static const Color textDarkColor = Color.fromRGBO(0, 0, 0, 1);
 
   /* -------------------------------------------------------------------------- */

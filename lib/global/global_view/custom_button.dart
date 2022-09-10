@@ -14,15 +14,17 @@ class CustomButton extends StatelessWidget {
   double fontSize;
   String text;
   FontWeight fontWeight;
+  bool hasGradient;
 
   CustomButton({
     required this.text,
     required this.onTap,
     this.buttonColor = CustomColors.buttonDarkColor,
-    this.height = 50,
+    this.height = 63,
     this.fontSize = 18,
     this.fontWeight = FontWeight.normal,
-    this.textColor = CustomColors.textWhiteColor,
+    this.textColor = CustomColors.textDarkColor,
+    this.hasGradient = true,
   });
   @override
   Widget build(BuildContext context) {
@@ -33,12 +35,22 @@ class CustomButton extends StatelessWidget {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: buttonColor,
+                color: hasGradient ? null : buttonColor,
                 borderRadius: BorderRadius.circular(
                   Design.radius,
                 ),
+                gradient: hasGradient
+                    ? const LinearGradient(
+                        colors: [
+                          Color(0xffF1E291),
+                          Color(0xffDFAE00),
+                          Color(0xffF1E291),
+                          Color(0xffE0B108),
+                        ],
+                      )
+                    : null,
               ),
-              height: height == 50 ? 50.h : height,
+              height: height == 63 ? 63.h : height,
               child: Center(
                 child: CustomText(
                   text: text,
