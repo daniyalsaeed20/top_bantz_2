@@ -26,10 +26,9 @@ class UserRepository {
 
   /* ----------------------------- Authentication ----------------------------- */
 
-  Future<bool> isSignedIn() async {
+  bool isSignedIn() {
     if (FirebaseAuth.instance.currentUser != null) {
-      await FirebaseAuth.instance.currentUser!.reload();
-      return FirebaseAuth.instance.currentUser!.emailVerified;
+      return true;
     } else {
       return false;
     }
@@ -73,8 +72,12 @@ class UserRepository {
 
   /* ---------------------------------- Fetch --------------------------------- */
 
-  getRiderDocument() async {
+  getUserDocument() async {
     _userModel = await _userServices.getUserDocument();
     print(_userModel);
+  }
+
+  currentUser() {
+    return _userModel;
   }
 }

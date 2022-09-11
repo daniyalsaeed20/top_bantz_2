@@ -8,7 +8,11 @@ import 'package:top_bantz_2/constants/design.dart';
 import 'package:top_bantz_2/global/global_view/custom_button.dart';
 import 'package:top_bantz_2/global/global_view/custom_text.dart';
 import 'package:top_bantz_2/modules/authentication/auth_controller.dart';
+import 'package:top_bantz_2/modules/home/home_navigation_page.dart';
 import 'dart:math' as math;
+
+import 'package:top_bantz_2/repositories/user_repository.dart';
+import 'package:top_bantz_2/services/user_services.dart';
 
 class CreateAvatar extends StatefulWidget {
   const CreateAvatar({Key? key}) : super(key: key);
@@ -18,7 +22,8 @@ class CreateAvatar extends StatefulWidget {
 }
 
 class _CreateAvatarState extends State<CreateAvatar> {
-  final AuthController _authController = Get.put(AuthController());
+  final AuthController _authController = Get.put(AuthController(
+      userRepository: UserRepository(userServices: UserServices())));
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +97,11 @@ class _CreateAvatarState extends State<CreateAvatar> {
                   ),
                   CustomButton(
                     text: 'Continue',
-                    onTap: () {},
+                    onTap: () {
+                      Get.to(() => HomeNavigationPage(
+                          userRepository:
+                              UserRepository(userServices: UserServices())));
+                    },
                   ),
                   SizedBox(
                     height: 46.h,
@@ -117,7 +126,8 @@ class AvatarFeatureTile extends StatelessWidget {
   String title;
   int index;
 
-  final AuthController _authController = Get.put(AuthController());
+  final AuthController _authController = Get.put(AuthController(
+      userRepository: UserRepository(userServices: UserServices())));
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +155,8 @@ class AvatarFeatureTile extends StatelessWidget {
 
 class AvatarFeatureOptions extends StatelessWidget {
   AvatarFeatureOptions({Key? key}) : super(key: key);
-  final AuthController _authController = Get.put(AuthController());
+  final AuthController _authController = Get.put(AuthController(
+      userRepository: UserRepository(userServices: UserServices())));
 
   @override
   Widget build(BuildContext context) {

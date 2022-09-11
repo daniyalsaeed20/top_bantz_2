@@ -9,6 +9,8 @@ import 'package:top_bantz_2/global/global_view/custom_button.dart';
 import 'package:top_bantz_2/global/global_view/custom_text.dart';
 import 'package:top_bantz_2/modules/authentication/auth_controller.dart';
 import 'package:top_bantz_2/modules/authentication/ui/sign_up/create_avatar.dart';
+import 'package:top_bantz_2/repositories/user_repository.dart';
+import 'package:top_bantz_2/services/user_services.dart';
 
 class SelectSubscriptionScreen extends StatefulWidget {
   const SelectSubscriptionScreen({Key? key}) : super(key: key);
@@ -19,7 +21,6 @@ class SelectSubscriptionScreen extends StatefulWidget {
 }
 
 class _SelectSubscriptionScreenState extends State<SelectSubscriptionScreen> {
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -70,7 +71,8 @@ class SubscriptionTypeTile extends StatelessWidget {
     required this.index,
   }) : super(key: key);
 
-  final AuthController _authController = Get.put(AuthController());
+  final AuthController _authController = Get.put(AuthController(
+      userRepository: UserRepository(userServices: UserServices())));
   int index;
 
   @override
@@ -81,6 +83,9 @@ class SubscriptionTypeTile extends StatelessWidget {
         child: InkWell(
           onTap: () {
             _authController.selectedSubscription.value = index;
+            index == 0
+                ? _authController.userModel.isPremium = false
+                : _authController.userModel.isPremium = true;
           },
           child: Stack(
             alignment: AlignmentDirectional.center,

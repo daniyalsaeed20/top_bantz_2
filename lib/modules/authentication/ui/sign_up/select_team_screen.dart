@@ -9,6 +9,8 @@ import 'package:top_bantz_2/global/global_view/custom_button.dart';
 import 'package:top_bantz_2/global/global_view/custom_text.dart';
 import 'package:top_bantz_2/modules/authentication/auth_controller.dart';
 import 'package:top_bantz_2/modules/authentication/ui/sign_up/select_subscription_screen.dart';
+import 'package:top_bantz_2/repositories/user_repository.dart';
+import 'package:top_bantz_2/services/user_services.dart';
 
 class SelectTeamScreen extends StatefulWidget {
   const SelectTeamScreen({Key? key}) : super(key: key);
@@ -18,7 +20,8 @@ class SelectTeamScreen extends StatefulWidget {
 }
 
 class _SelectTeamScreenState extends State<SelectTeamScreen> {
-  final AuthController _authController = Get.put(AuthController());
+  final AuthController _authController = Get.put(AuthController(
+      userRepository: UserRepository(userServices: UserServices())));
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +46,7 @@ class _SelectTeamScreenState extends State<SelectTeamScreen> {
                   fontWeight: FontWeight.w600,
                 ),
                 CustomText(
-                  text: "You can choose more than one",
+                  text: "You can choose any one",
                   color: CustomColors.textMediumColor,
                   maxLines: 2,
                   alignment: TextAlign.left,
@@ -67,6 +70,8 @@ class _SelectTeamScreenState extends State<SelectTeamScreen> {
                             splashColor: CustomColors.transparentColor,
                             onTap: () {
                               _authController.teamIndex.value = i;
+                              _authController.userModel.groupId =
+                                  _authController.teamGroups[i];
                             },
                             child: TeamLogoCard(
                               image: _authController.teamImages[i],
@@ -102,7 +107,8 @@ class TeamLogoCard extends StatelessWidget {
   String image;
   int index;
 
-  final AuthController _authController = Get.put(AuthController());
+  final AuthController _authController = Get.put(AuthController(
+      userRepository: UserRepository(userServices: UserServices())));
 
   @override
   Widget build(BuildContext context) {

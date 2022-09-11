@@ -13,6 +13,7 @@ import 'package:top_bantz_2/models/user_model.dart';
 import 'package:top_bantz_2/modules/authentication/auth_controller.dart';
 import 'package:top_bantz_2/modules/authentication/ui/sign_up/select_team_screen.dart';
 import 'package:top_bantz_2/repositories/user_repository.dart';
+import 'package:top_bantz_2/services/user_services.dart';
 
 class SignUpScreen extends StatelessWidget {
   SignUpScreen({Key? key, required this.userRepository}) : super(key: key);
@@ -49,13 +50,58 @@ class _UiState extends State<Ui> {
 
   final TextEditingController dateOfBirthController = TextEditingController();
 
-  final AuthController _authController = Get.put(AuthController());
+  final AuthController _authController = Get.put(
+    AuthController(
+      userRepository: UserRepository(
+        userServices: UserServices(),
+      ),
+    ),
+  );
 
   /* -------------------------------------------------------------------------- */
 
   @override
   Widget build(BuildContext context) {
-    return GetX<AuthController>(builder: (_) {
+    return GetX<AuthController>(
+      initState: (_) {
+      _authController.attemptRegistration.value = false;
+      _authController.successRegistration.value = false;
+      _authController.failedRegistration.value = false;
+      _authController.addListener(() {});
+      _authController.attemptRegistration.listen((value) async {
+        if (value) {
+          openSnackbar(
+              title: 'Attempting Registration', text: 'Please hold on...');
+          _getRegistrationData(
+            contactNumber: contactNumberController.text,
+            dateOfBirth: dateOfBirthController.text,
+            email: emailController.text,
+            fullName: fullNameController.text,
+            password: passwordController.text,
+          );
+          await _authController.registerUser();
+          _authController.successRegistration.value = true;
+          _authController.attemptRegistration.value = false;
+        }
+      });
+      _authController.successRegistration.listen((value) {
+        if (value) {
+          openSnackbar(
+              title: 'Registration Successful',
+              text: 'You are all set, onto next step...');
+          _authController.successRegistration.value = false;
+          Get.to(() => const SelectTeamScreen());
+        }
+      });
+      _authController.failedRegistration.listen((value) {
+        if (value) {
+          openSnackbar(
+              title: 'Registration Failed',
+              text: 'Oops... Something went wrong!');
+          _authController.failedRegistration.value = false;
+        }
+      });
+    }, builder: (_) {
       return SafeArea(
         child: Scaffold(
           backgroundColor: CustomColors.backGroundColor,
@@ -153,20 +199,42 @@ class _UiState extends State<Ui> {
                     SizedBox(
                       height: (65).h,
                     ),
-                    CustomButton(
-                        text: 'Continue',
-                        onTap: () {
-                          if (_signupKey.currentState!.validate()) {
-                            _getRegistrationData(
-                              contactNumber: contactNumberController.text,
-                              dateOfBirth: dateOfBirthController.text,
-                              email: emailController.text,
-                              fullName: fullNameController.text,
-                              password: passwordController.text,
-                            );
-                          Get.to(() => const SelectTeamScreen());
-                          }
-                        }),
+                    if (!_authController.attemptRegistration.value)
+                      CustomButton(
+                          text: 'Continue',
+                          onTap: () {
+                            if (_signupKey.currentState!.validate()) {
+                              _authController.attemptRegistration.value = true;
+                            }
+                          }),
+                    if (_authController.attemptRegistration.value)
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                  Design.radius,
+                                ),
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xffF1E291),
+                                    Color(0xffDFAE00),
+                                    Color(0xffF1E291),
+                                    Color(0xffE0B108),
+                                  ],
+                                ),
+                              ),
+                              height: 63.h,
+                              child: const Center(
+                                child: CircularProgressIndicator(
+                                  color: CustomColors.foreGroundColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                   ],
                 ),
               ),
@@ -197,5 +265,18 @@ class _UiState extends State<Ui> {
       userName: fullName,
     );
     _authController.password = password;
+  }
+
+  void openSnackbar({
+    required String title,
+    required String text,
+  }) {
+    Get.snackbar(
+      title,
+      text,
+      snackPosition: SnackPosition.TOP,
+      backgroundColor: CustomColors.foreGroundColor,
+      colorText: CustomColors.textWhiteColor,
+    );
   }
 }

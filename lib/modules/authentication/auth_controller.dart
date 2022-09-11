@@ -1,14 +1,22 @@
 import 'package:get/get.dart';
 import 'package:top_bantz_2/models/user_model.dart';
+import 'package:top_bantz_2/repositories/user_repository.dart';
+
+enum RegistrationEvent {
+  success,
+  failure,
+  inprocess,
+  none,
+}
 
 class AuthController extends GetxController {
-  // AuthController({required UserServices userServices})
-  //     : _userServices = userServices;
+  AuthController({required UserRepository userRepository})
+      : _userRepository = userRepository;
 
   /* -------------------------------------------------------------------------- */
   /*                              Private Variables                             */
   /* -------------------------------------------------------------------------- */
-  // final UserServices _userServices;
+  final UserRepository _userRepository;
 
   /* -------------------------------------------------------------------------- */
   /*                              Public Variables                              */
@@ -21,6 +29,15 @@ class AuthController extends GetxController {
   RxInt currentSelectedAvatarFeature = 999.obs;
 
   RxInt selectedSubscription = 2.obs;
+
+  RxBool attemptRegistration = false.obs;
+  RxBool successRegistration = false.obs;
+  RxBool failedRegistration = false.obs;
+  RxBool attemptLogin = false.obs;
+  RxBool successLogin = false.obs;
+  RxBool failedLogin = false.obs;
+
+  RegistrationEvent registrationEventHandler = RegistrationEvent.none;
 
   /* -------------------------------------------------------------------------- */
   /*                                    Lists                                   */
@@ -69,4 +86,27 @@ class AuthController extends GetxController {
   /* -------------------------------------------------------------------------- */
   /*                                  Functions                                 */
   /* -------------------------------------------------------------------------- */
+
+  registerUser() async {
+    await _userRepository.registerWithCredentials(
+      userModel: userModel,
+      password: password,
+    );
+  }
+
+  loginUser({required String email, required String password}) async {
+    await _userRepository.signInWithCredentials(
+      email: email,
+      password: password,
+    );
+  }
+
+  checkIsUserSignedIn() {
+    return _userRepository.isSignedIn();
+  }
+
+  getUserData() async {
+    await _userRepository.getUserDocument();
+    userModel = _userRepository.currentUser();
+  }
 }
