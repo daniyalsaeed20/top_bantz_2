@@ -1,6 +1,11 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:top_bantz_2/constants/custom_colors.dart';
+import 'package:top_bantz_2/constants/design.dart';
+import 'package:top_bantz_2/global/global_view/custom_button.dart';
+import 'package:top_bantz_2/global/global_view/custom_text.dart';
 import 'package:top_bantz_2/repositories/user_repository.dart';
 
 class HomeNavigationPage extends StatelessWidget {
@@ -11,217 +16,362 @@ class HomeNavigationPage extends StatelessWidget {
   UserRepository userRepository;
   @override
   Widget build(BuildContext context) {
-    // return BlocProvider(
-    //   create: (context) => HomeDeliveryBloc(userRepository: userRepository)
-    //     ..add(const HomeDeliveryIsOffLineEvent()),
-    //   child: Ui(userRepository: userRepository),
-    // );
-    return const SafeArea(child: Scaffold());
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: CustomColors.backGroundColor,
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              HomePageAppBar(),
+              const HomeNotificationCard(),
+              const HomeTabBar(),
+              const LeagueCard(),
+              const HomeTabBar(),
+              const BattleRoomCard(),
+              const HomeTabBar(),
+              const Lobbies(),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 
-// class Ui extends StatelessWidget {
-//   const Ui({
-//     Key? key,
-//     required this.userRepository,
-//   }) : super(key: key);
+class HomePageAppBar extends StatelessWidget {
+  HomePageAppBar({Key? key}) : super(key: key);
 
-//   final UserRepository userRepository;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 75.h,
+      color: CustomColors.backGroundColor,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Container(
+            height: 64.h,
+            width: 83.w,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                fit: BoxFit.contain,
+                image: AssetImage('assets/images/landing_images/logo.png'),
+              ),
+            ),
+          ),
+          const Spacer(),
+          Icon(
+            Icons.search,
+            color: CustomColors.textWhiteColor,
+            size: 30.r,
+          ),
+          SizedBox(
+            width: 12.w,
+          ),
+          Icon(
+            Icons.notifications_none_outlined,
+            color: CustomColors.textWhiteColor,
+            size: 30.r,
+          ),
+          SizedBox(
+            width: 12.w,
+          ),
+          Container(
+            width: 95.w,
+            height: 28.h,
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [
+                  Color(0xffF1E291),
+                  Color(0xffDFAE00),
+                  Color(0xffF1E291),
+                  Color(0xffE0B108),
+                ],
+              ),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(90.r),
+                bottomLeft: Radius.circular(90.r),
+              ),
+            ),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 4.w,
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: CustomColors.backGroundColor,
+                    borderRadius: BorderRadius.all(Radius.circular(90.r)),
+                  ),
+                  child: Icon(
+                    Icons.currency_pound,
+                    color: CustomColors.textYellowColor,
+                    size: 20.r,
+                  ),
+                ),
+                SizedBox(
+                  width: 7.w,
+                ),
+                CustomText(
+                  text: '100',
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w700,
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return SafeArea(
-//       child: Scaffold(
-//         appBar: AppBar(
-//           backgroundColor: CustomColors.foreGroundColor,
-//           actions: [
-//             BlocBuilder<HomeDeliveryBloc, HomeDeliveryState>(
-//               builder: (context, state) {
-//                 if (state is HomeDeliveryIsOnlineState) {
-//                   return InkWell(
-//                     onTap: () {
-//                       BlocProvider.of<HomeDeliveryBloc>(context)
-//                           .add(const HomeDeliveryAttemptOfflineEvent());
-//                     },
-//                     child: const CircleAvatar(
-//                       backgroundColor: Colors.green,
-//                       foregroundColor: CustomColors.foreGroundColor,
-//                     ),
-//                   );
-//                 }
-//                 if (state is HomeDeliveryAttemptOfflineState) {
-//                   return InkWell(
-//                     onTap: () {
-//                       BlocProvider.of<HomeDeliveryBloc>(context)
-//                           .add(const HomeDeliveryAttemptOfflineEvent());
-//                     },
-//                     child: const CircleAvatar(
-//                       backgroundColor: CustomColors.transparentColor,
-//                       foregroundColor: CustomColors.transparentColor,
-//                       child: CircularProgressIndicator(),
-//                     ),
-//                   );
-//                 }
-//                 return const CircleAvatar(
-//                   backgroundColor: Colors.red,
-//                   foregroundColor: CustomColors.foreGroundColor,
-//                 );
-//               },
-//             ),
-//             SizedBox(
-//               width: 10.w,
-//             ),
-//             const CircleAvatar(
-//               backgroundColor: CustomColors.backGroundColor,
-//               foregroundColor: CustomColors.foreGroundColor,
-//             ),
-//             SizedBox(
-//               width: 25.w,
-//             ),
-//           ],
-//         ),
-//         extendBody: true,
-//         backgroundColor: CustomColors.foreGroundColor,
-//         bottomNavigationBar: Container(
-//           decoration: BoxDecoration(
-//             borderRadius: BorderRadius.only(
-//               topLeft: Radius.circular(43.r),
-//               topRight: Radius.circular(43.r),
-//             ),
-//             color: CustomColors.backGroundColor,
-//           ),
-//           height: 42.h,
-//           child: Padding(
-//             padding: EdgeInsets.symmetric(horizontal: 35.w),
-//             child: Row(
-//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//               children: const [
-//                 Icon(
-//                   Icons.home_outlined,
-//                   color: CustomColors.foreGroundColor,
-//                 ),
-//                 Icon(
-//                   Icons.monetization_on_outlined,
-//                   color: CustomColors.foreGroundColor,
-//                 ),
-//                 Icon(
-//                   Icons.checklist_outlined,
-//                   color: CustomColors.foreGroundColor,
-//                 ),
-//                 Icon(
-//                   Icons.settings_outlined,
-//                   color: CustomColors.foreGroundColor,
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ),
-//         body: HomeDeliveryScreen(userRepository: userRepository),
-//         drawer: CustomDrawer(
-//           userRepository: userRepository,
-//         ),
-//       ),
-//     );
-//   }
-// }
+class HomeNotificationCard extends StatelessWidget {
+  const HomeNotificationCard({Key? key}) : super(key: key);
 
-// class CustomDrawer extends StatelessWidget {
-//   CustomDrawer({
-//     Key? key,
-//     required this.userRepository,
-//   }) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 319.w,
+      height: 200.h,
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          fit: BoxFit.fitWidth,
+          image: AssetImage('assets/images/notification_banner.png'),
+        ),
+      ),
+      child: Padding(
+        padding: EdgeInsets.only(left: 18.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 68.h,
+            ),
+            CustomText(
+              text: 'Liverpool UEFA\nChampion League\nCelebration',
+              maxLines: 3,
+              color: CustomColors.textWhiteColor,
+              fontWeight: FontWeight.w600,
+              fontSize: 18.sp,
+              alignment: TextAlign.start,
+            ),
+            CustomText(
+              text: 'Yesterday, 06.30 PM',
+              color: CustomColors.textWhiteColor,
+              fontWeight: FontWeight.w400,
+              fontSize: 12.sp,
+              alignment: TextAlign.start,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
-//   UserRepository userRepository;
+class HomeTabBar extends StatelessWidget {
+  const HomeTabBar({Key? key}) : super(key: key);
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Drawer(
-//       backgroundColor: CustomColors.backGroundColor,
-//       child: Column(
-//         children: [
-//           DrawerHeader(
-//             decoration: const BoxDecoration(
-//               color: CustomColors.backGroundColor,
-//             ),
-//             child: Column(
-//               children: [
-//                 Expanded(
-//                   child: Container(
-//                     decoration: const BoxDecoration(
-//                       image: DecorationImage(
-//                         image: AssetImage('assets/images/logo.png'),
-//                         fit: BoxFit.contain,
-//                       ),
-//                     ),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-//           DrawerTile(
-//             icon: Icons.money,
-//             text: 'Earning',
-//             onTap: () {},
-//           ),
-//           DrawerTile(
-//             icon: Icons.query_stats_outlined,
-//             text: 'My History',
-//             onTap: () {},
-//           ),
-//           DrawerTile(
-//             icon: Icons.account_circle_outlined,
-//             text: 'Profile',
-//             onTap: () {
-//               Navigator.push(
-//                 context,
-//                 MaterialPageRoute(
-//                   builder: (context) => ProfilePage(
-//                     userRepository: userRepository,
-//                   ),
-//                 ),
-//               );
-//             },
-//           ),
-//           DrawerTile(
-//             icon: Icons.question_mark,
-//             text: 'F.A.Q',
-//             onTap: () {},
-//           ),
-//           DrawerTile(
-//             icon: Icons.notifications,
-//             text: 'Notifications',
-//             onTap: () {},
-//           ),
-//           DrawerTile(
-//             icon: Icons.support_agent,
-//             text: 'Help',
-//             onTap: () {},
-//           ),
-//           Spacer(),
-//           DrawerTile(
-//             icon: Icons.logout,
-//             text: 'Log out',
-//             onTap: () {},
-//             hasIcon: false,
-//           ),
-//           Row(
-//             mainAxisAlignment: MainAxisAlignment.end,
-//             children: [
-//               Padding(
-//                 padding: EdgeInsets.only(
-//                   bottom: 17.h,
-//                   right: 11.w,
-//                 ),
-//                 child: CustomText(
-//                   text: 'Version 1.1.1',
-//                   fontSize: 7.sp,
-//                   fontWeight: FontWeight.w200,
-//                 ),
-//               ),
-//             ],
-//           )
-//         ],
-//       ),
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding:
+          EdgeInsets.only(left: 28.w, right: 28.w, top: 20.h, bottom: 13.h),
+      child: Row(
+        children: [
+          CustomText(
+            text: 'Leagues',
+            fontSize: 24.sp,
+            fontWeight: FontWeight.w400,
+            color: CustomColors.textWhiteColor,
+          ),
+          const Spacer(),
+          InkWell(
+            onTap: () {},
+            child: CustomText(
+              text: 'See All',
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
+              color: CustomColors.textYellowColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class LeagueCard extends StatelessWidget {
+  const LeagueCard({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 68.h,
+      width: 319.w,
+      decoration: BoxDecoration(
+        color: CustomColors.foreGroundColor,
+        borderRadius: BorderRadius.circular(Design.radius),
+      ),
+      child: Row(
+        children: [
+          SizedBox(width: 12.w),
+          Container(
+            height: 44.h,
+            width: 51.w,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                fit: BoxFit.contain,
+                image: AssetImage('assets/images/landing_images/logo.png'),
+              ),
+            ),
+          ),
+          SizedBox(width: 12.w),
+          CustomText(
+            text: 'Premier League',
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w600,
+            color: CustomColors.textWhiteColor,
+          ),
+          const Spacer(),
+          Container(
+            height: 68.h,
+            width: 59.w,
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [
+                  Color(0xffF1E291),
+                  Color(0xffDFAE00),
+                  Color(0xffF1E291),
+                  Color(0xffE0B108),
+                ],
+              ),
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(Design.radius),
+                bottomRight: Radius.circular(Design.radius),
+              ),
+            ),
+            child: Center(
+              child: CustomText(
+                text: 'Join',
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class BattleRoomCard extends StatelessWidget {
+  const BattleRoomCard({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 68.h,
+      width: 319.w,
+      decoration: BoxDecoration(
+        color: CustomColors.foreGroundColor,
+        borderRadius: BorderRadius.circular(Design.radius),
+      ),
+      child: Row(
+        children: [
+          SizedBox(width: 12.w),
+          SizedBox(
+            width: 67.w,
+            child: CustomButton(
+              height: 24.h,
+              text: 'Join',
+              fontSize: 14.sp,
+              onTap: () {},
+              hasGradient: false,
+              buttonColor: const Color(0xffDB0030),
+              textColor: CustomColors.textWhiteColor,
+            ),
+          ),
+          SizedBox(width: 12.w),
+          Container(
+            height: 44.h,
+            width: 51.w,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                fit: BoxFit.contain,
+                image: AssetImage('assets/images/landing_images/logo.png'),
+              ),
+            ),
+          ),
+          const Spacer(),
+          CustomText(
+            text: 'VS',
+            fontSize: 24.sp,
+            fontWeight: FontWeight.w400,
+            color: CustomColors.textWhiteColor,
+          ),
+          const Spacer(),
+          Container(
+            height: 44.h,
+            width: 51.w,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                fit: BoxFit.contain,
+                image: AssetImage('assets/images/landing_images/logo.png'),
+              ),
+            ),
+          ),
+          SizedBox(width: 12.w),
+          SizedBox(
+            width: 67.w,
+            child: CustomButton(
+              height: 24.h,
+              text: 'Join',
+              fontSize: 14.sp,
+              onTap: () {},
+              hasGradient: false,
+              buttonColor: const Color(0xff1C66CB),
+              textColor: CustomColors.textWhiteColor,
+            ),
+          ),
+          SizedBox(width: 12.w),
+        ],
+      ),
+    );
+  }
+}
+
+class Lobbies extends StatelessWidget {
+  const Lobbies({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      alignment: WrapAlignment.center,
+      runSpacing: 13.h,
+      spacing: 13.w,
+      children: [
+        for (int i = 0; i < 10; i++)
+          InkWell(
+            splashColor: CustomColors.transparentColor,
+            onTap: () {},
+            child: Container(
+              height: 71.h,
+              width: 71.w,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(Design.radius),
+                color: CustomColors.foreGroundColor,
+                image: const DecorationImage(
+                  fit: BoxFit.contain,
+                  image: AssetImage(
+                    'assets/images/leagues/barcelona.png',
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
