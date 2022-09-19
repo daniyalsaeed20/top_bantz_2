@@ -24,11 +24,24 @@ class HomeNavigationPage extends StatelessWidget {
             children: [
               HomePageAppBar(),
               const HomeNotificationCard(),
-              const HomeTabBar(),
-              const LeagueCard(),
-              const HomeTabBar(),
+              HomeTabBar(
+                title: 'Leagues',
+                onTap: () {},
+              ),
+              LeagueCard(
+                image: 'assets/images/landing_images/logo.png',
+                onTap: () {},
+                title: 'Premier League',
+              ),
+              HomeTabBar(
+                title: 'Battle Room',
+                onTap: () {},
+              ),
               const BattleRoomCard(),
-              const HomeTabBar(),
+              HomeTabBar(
+                title: 'Lobbies',
+                onTap: () {},
+              ),
               const Lobbies(),
             ],
           ),
@@ -171,8 +184,13 @@ class HomeNotificationCard extends StatelessWidget {
 }
 
 class HomeTabBar extends StatelessWidget {
-  const HomeTabBar({Key? key}) : super(key: key);
+  HomeTabBar({Key? key, required String title, required Function() onTap})
+      : _title = title,
+        _onTap = onTap,
+        super(key: key);
 
+  Function() _onTap;
+  String _title;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -181,14 +199,14 @@ class HomeTabBar extends StatelessWidget {
       child: Row(
         children: [
           CustomText(
-            text: 'Leagues',
+            text: _title,
             fontSize: 24.sp,
             fontWeight: FontWeight.w400,
             color: CustomColors.textWhiteColor,
           ),
           const Spacer(),
           InkWell(
-            onTap: () {},
+            onTap: _onTap,
             child: CustomText(
               text: 'See All',
               fontSize: 16.sp,
@@ -203,7 +221,19 @@ class HomeTabBar extends StatelessWidget {
 }
 
 class LeagueCard extends StatelessWidget {
-  const LeagueCard({Key? key}) : super(key: key);
+  LeagueCard(
+      {Key? key,
+      required void Function() onTap,
+      required String title,
+      required String image})
+      : _onTap = onTap,
+        _title = title,
+        _image = image,
+        super(key: key);
+
+  String _image;
+  String _title;
+  void Function()? _onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -220,43 +250,46 @@ class LeagueCard extends StatelessWidget {
           Container(
             height: 44.h,
             width: 51.w,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               image: DecorationImage(
                 fit: BoxFit.contain,
-                image: AssetImage('assets/images/landing_images/logo.png'),
+                image: AssetImage(_image),
               ),
             ),
           ),
           SizedBox(width: 12.w),
           CustomText(
-            text: 'Premier League',
+            text: _title,
             fontSize: 18.sp,
             fontWeight: FontWeight.w600,
             color: CustomColors.textWhiteColor,
           ),
           const Spacer(),
-          Container(
-            height: 68.h,
-            width: 59.w,
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [
-                  Color(0xffF1E291),
-                  Color(0xffDFAE00),
-                  Color(0xffF1E291),
-                  Color(0xffE0B108),
-                ],
+          InkWell(
+            onTap: _onTap,
+            child: Container(
+              height: 68.h,
+              width: 59.w,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [
+                    Color(0xffF1E291),
+                    Color(0xffDFAE00),
+                    Color(0xffF1E291),
+                    Color(0xffE0B108),
+                  ],
+                ),
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(Design.radius),
+                  bottomRight: Radius.circular(Design.radius),
+                ),
               ),
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(Design.radius),
-                bottomRight: Radius.circular(Design.radius),
-              ),
-            ),
-            child: Center(
-              child: CustomText(
-                text: 'Join',
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
+              child: Center(
+                child: CustomText(
+                  text: 'Join',
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ),
@@ -352,7 +385,7 @@ class Lobbies extends StatelessWidget {
       runSpacing: 13.h,
       spacing: 13.w,
       children: [
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 4; i++)
           InkWell(
             splashColor: CustomColors.transparentColor,
             onTap: () {},
