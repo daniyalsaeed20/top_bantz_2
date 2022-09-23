@@ -42,7 +42,7 @@ class _UiState extends State<Ui> {
   final TextEditingController confirmPasswordController =
       TextEditingController();
 
-  final TextEditingController fullNameController = TextEditingController();
+  final TextEditingController userNameController = TextEditingController();
 
   final TextEditingController emailController = TextEditingController();
 
@@ -62,8 +62,7 @@ class _UiState extends State<Ui> {
 
   @override
   Widget build(BuildContext context) {
-    return GetX<AuthController>(
-      initState: (_) {
+    return GetX<AuthController>(initState: (_) {
       _authController.attemptRegistration.value = false;
       _authController.successRegistration.value = false;
       _authController.failedRegistration.value = false;
@@ -76,7 +75,7 @@ class _UiState extends State<Ui> {
             contactNumber: contactNumberController.text,
             dateOfBirth: dateOfBirthController.text,
             email: emailController.text,
-            fullName: fullNameController.text,
+            userName: userNameController.text,
             password: passwordController.text,
           );
           await _authController.registerUser();
@@ -128,8 +127,8 @@ class _UiState extends State<Ui> {
                     ),
                     CustomTextField(
                       title: "Full Name",
-                      controller: fullNameController,
-                      validator: CustomValidators().fullNameValidator,
+                      controller: userNameController,
+                      validator: CustomValidators().userNameValidator,
                       keyboardType: TextInputType.name,
                       onTap: () {},
                       prefixIcon: Icons.account_circle_outlined,
@@ -251,7 +250,7 @@ class _UiState extends State<Ui> {
   }
 
   _getRegistrationData({
-    required String fullName,
+    required String userName,
     required String email,
     required String dateOfBirth,
     required String contactNumber,
@@ -262,7 +261,7 @@ class _UiState extends State<Ui> {
       dateOfBirth: dateOfBirth,
       email: email,
       userId: '',
-      userName: fullName,
+      userName: userName,
     );
     _authController.password = password;
   }

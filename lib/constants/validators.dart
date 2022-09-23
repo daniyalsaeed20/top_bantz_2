@@ -41,7 +41,7 @@ class CustomValidators {
         errorText: 'Capitalize first letter or remove spaces')
   ]);
 
-  final fullNameValidator = MultiValidator([
+  final userNameValidator = MultiValidator([
     RequiredValidator(errorText: 'Name is required'),
     MinLengthValidator(1, errorText: 'Name must be at least 1 characters long'),
     PatternValidator(r'^[a-z A-Z,.\-]+$', errorText: 'Incorrect name')

@@ -24,10 +24,12 @@ class CustomColors {
   static const Color textWhiteColor = Color.fromRGBO(255, 255, 255, 1);
   static const Color textMediumColor = Color(0xff65656B);
   static const Color textDarkColor = Color.fromRGBO(0, 0, 0, 1);
+  static const Color textLightColor = Color.fromRGBO(168, 166, 167, 1);
 
   /* -------------------------------------------------------------------------- */
   /*                                    Other                                   */
   /* -------------------------------------------------------------------------- */
   static const Color transparentColor = Colors.transparent;
   static const Color blackColor = Colors.black;
+  static const Color themeColor = Color(0xFF254979);
 }

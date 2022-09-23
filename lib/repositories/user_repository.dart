@@ -1,4 +1,3 @@
-// ignore_for_file: avoid_print, prefer_final_fields
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:top_bantz_2/models/user_model.dart';
 import 'package:top_bantz_2/services/user_services.dart';
@@ -74,7 +73,7 @@ class UserRepository {
 
   getUserDocument() async {
     _userModel = await _userServices.getUserDocument();
-    print(_userModel);
+    return _userModel;
   }
 
   currentUser() {

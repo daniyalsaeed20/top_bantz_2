@@ -31,7 +31,7 @@ class UserServices {
           .get()
           .then(
         (value) {
-          return UserModel.fromDocumentSnapshot(value);
+          return UserModel.fromMap(value);
         },
       );
     } on Exception catch (err) {

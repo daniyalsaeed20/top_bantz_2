@@ -2,10 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:top_bantz_2/constants/custom_colors.dart';
 import 'package:top_bantz_2/constants/design.dart';
 import 'package:top_bantz_2/global/global_view/custom_button.dart';
 import 'package:top_bantz_2/global/global_view/custom_text.dart';
+import 'package:top_bantz_2/modules/chat/group_chat_screen.dart';
 import 'package:top_bantz_2/repositories/user_repository.dart';
 
 class HomeNavigationPage extends StatelessWidget {
@@ -42,7 +44,7 @@ class HomeNavigationPage extends StatelessWidget {
                 title: 'Lobbies',
                 onTap: () {},
               ),
-              const Lobbies(),
+              Lobbies(userRepository: userRepository),
             ],
           ),
         ),
@@ -376,7 +378,11 @@ class BattleRoomCard extends StatelessWidget {
 }
 
 class Lobbies extends StatelessWidget {
-  const Lobbies({Key? key}) : super(key: key);
+  Lobbies({Key? key, required UserRepository userRepository})
+      : _userRepository = userRepository,
+        super(key: key);
+
+  UserRepository _userRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -388,7 +394,15 @@ class Lobbies extends StatelessWidget {
         for (int i = 0; i < 4; i++)
           InkWell(
             splashColor: CustomColors.transparentColor,
-            onTap: () {},
+            onTap: () {
+              Get.to(
+                () => GroupChatScreen(
+                  groupChatId: '',
+                  groupName: '',
+                  userModel: _userRepository.currentUser(),
+                ),
+              );
+            },
             child: Container(
               height: 71.h,
               width: 71.w,

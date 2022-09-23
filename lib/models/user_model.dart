@@ -21,7 +21,7 @@ class UserModel {
   String image;
   bool isPremium;
 
-  factory UserModel.fromDocumentSnapshot(DocumentSnapshot doc) {
+  factory UserModel.fromMap(DocumentSnapshot doc) {
     return UserModel(
       userName: doc["userName"],
       email: doc["email"],

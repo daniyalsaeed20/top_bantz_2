@@ -54,7 +54,7 @@ class Ui extends StatelessWidget {
               openSnackbar(
                   title: 'Attempting auto-login', text: 'Please hold on...');
             });
-            await _authController.getUserData();
+            _authController.userModel = await userRepository.getUserDocument();
             Get.to(
               () => HomeNavigationPage(
                 userRepository: UserRepository(
