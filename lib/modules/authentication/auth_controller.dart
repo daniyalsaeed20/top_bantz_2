@@ -26,8 +26,6 @@ class AuthController extends GetxController {
   UserModel userModel = UserModel();
   late String password;
 
-  RxInt currentSelectedAvatarFeature = 999.obs;
-
   RxInt selectedSubscription = 2.obs;
 
   RxBool attemptRegistration = false.obs;

@@ -8,7 +8,7 @@ import 'package:top_bantz_2/constants/custom_colors.dart';
 import 'package:top_bantz_2/constants/design.dart';
 import 'package:top_bantz_2/global/global_view/custom_button.dart';
 import 'package:top_bantz_2/global/global_view/custom_text.dart';
-import 'package:top_bantz_2/modules/home/home_navigation_page.dart';
+import 'package:top_bantz_2/modules/home/main_navigation_page.dart';
 import 'package:top_bantz_2/repositories/user_repository.dart';
 
 class VerificationScreen extends StatelessWidget {
@@ -114,11 +114,10 @@ emailNotVerified(BuildContext context) {
         backgroundColor: CustomColors.foreGroundColor,
       ),
     );
-  
 }
 
 emailVerified(BuildContext context, UserRepository userRepository) {
-  Get.off(HomeNavigationPage(
-          userRepository: userRepository,
-        ));
+  Get.off(MainNavigationPage(
+    userRepository: userRepository,
+  ));
 }

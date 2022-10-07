@@ -8,7 +8,7 @@ import 'package:top_bantz_2/constants/design.dart';
 import 'package:top_bantz_2/global/global_view/custom_button.dart';
 import 'package:top_bantz_2/global/global_view/custom_text.dart';
 import 'package:top_bantz_2/modules/authentication/auth_controller.dart';
-import 'package:top_bantz_2/modules/authentication/ui/sign_up/create_avatar.dart';
+import 'package:top_bantz_2/modules/avatar/create_avatar.dart';
 import 'package:top_bantz_2/repositories/user_repository.dart';
 import 'package:top_bantz_2/services/user_services.dart';
 

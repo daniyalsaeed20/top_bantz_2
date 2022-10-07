@@ -1,53 +1,47 @@
-// ignore_for_file: must_be_immutable
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:top_bantz_2/constants/custom_colors.dart';
-import 'package:top_bantz_2/constants/design.dart';
-import 'package:top_bantz_2/global/global_view/custom_button.dart';
-import 'package:top_bantz_2/global/global_view/custom_text.dart';
-import 'package:top_bantz_2/modules/chat/group_chat_screen.dart';
-import 'package:top_bantz_2/repositories/user_repository.dart';
 
-class HomeNavigationPage extends StatelessWidget {
-  HomeNavigationPage({
+import '../../constants/custom_colors.dart';
+import '../../constants/design.dart';
+import '../../global/global_view/custom_button.dart';
+import '../../global/global_view/custom_text.dart';
+import '../../repositories/user_repository.dart';
+import '../chat/group_chat_screen.dart';
+
+class HomePage extends StatelessWidget {
+  const HomePage({
     Key? key,
     required this.userRepository,
   }) : super(key: key);
-  UserRepository userRepository;
+  final UserRepository userRepository;
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: CustomColors.backGroundColor,
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              HomePageAppBar(),
-              const HomeNotificationCard(),
-              HomeTabBar(
-                title: 'Leagues',
-                onTap: () {},
-              ),
-              LeagueCard(
-                image: 'assets/images/landing_images/logo.png',
-                onTap: () {},
-                title: 'Premier League',
-              ),
-              HomeTabBar(
-                title: 'Battle Room',
-                onTap: () {},
-              ),
-              const BattleRoomCard(),
-              HomeTabBar(
-                title: 'Lobbies',
-                onTap: () {},
-              ),
-              Lobbies(userRepository: userRepository),
-            ],
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          HomePageAppBar(),
+          const HomeNotificationCard(),
+          HomeTabBar(
+            title: 'Leagues',
+            onTap: () {},
           ),
-        ),
+          LeagueCard(
+            image: 'assets/images/landing_images/logo.png',
+            onTap: () {},
+            title: 'Premier League',
+          ),
+          HomeTabBar(
+            title: 'Battle Room',
+            onTap: () {},
+          ),
+          const BattleRoomCard(),
+          HomeTabBar(
+            title: 'Lobbies',
+            onTap: () {},
+          ),
+          Lobbies(userRepository: userRepository),
+        ],
       ),
     );
   }
