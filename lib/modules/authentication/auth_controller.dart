@@ -93,10 +93,14 @@ class AuthController extends GetxController {
   }
 
   loginUser({required String email, required String password}) async {
-    await _userRepository.signInWithCredentials(
-      email: email,
-      password: password,
-    );
+    try {
+      await _userRepository.signInWithCredentials(
+        email: email,
+        password: password,
+      );
+    } catch (e) {
+      print(e);
+    }
   }
 
   checkIsUserSignedIn() {

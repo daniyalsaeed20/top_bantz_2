@@ -36,7 +36,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
         userRepository: widget.userRepository,
       ),
       ExplaorePage(),
-      EarnCoinPage(),
+      EarnCoinPage(userRepository: widget.userRepository),
       StandingsPage(),
       Settings(
         userRepository: widget.userRepository,

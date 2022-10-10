@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:top_bantz_2/constants/custom_colors.dart';
+import 'package:top_bantz_2/global/global_view/custom_button.dart';
 import 'package:top_bantz_2/global/global_view/custom_text.dart';
+import 'package:top_bantz_2/modules/home/home_page.dart';
+import 'package:top_bantz_2/repositories/user_repository.dart';
 
 import 'avatar_controller.dart';
 
@@ -59,8 +62,9 @@ int selectedMouth = 0;
 AvatarController avatarController = Get.put(AvatarController());
 
 class CreateAvatar extends StatefulWidget {
-  const CreateAvatar({Key? key}) : super(key: key);
-
+  const CreateAvatar({Key? key, required this.userRepository})
+      : super(key: key);
+  final UserRepository userRepository;
   @override
   _CreateAvatarState createState() => _CreateAvatarState();
 }
@@ -84,183 +88,199 @@ class _CreateAvatarState extends State<CreateAvatar> {
               backgroundColor: CustomColors.backGroundColor,
               body: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 28.w, vertical: 45.h),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomText(
-                      text: 'Create Your\nAvatar',
-                      color: CustomColors.textWhiteColor,
-                      fontSize: 36.sp,
-                      fontWeight: FontWeight.w600,
-                      maxLines: 2,
-                      alignment: TextAlign.start,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ...[
-                          InkWell(
-                            splashColor: CustomColors.transparentColor,
-                            onTap: () {
-                              setState(() {
-                                _selectedIndex = 0;
-                              });
-                            },
-                            child: FeatureButton(
-                              index: 0,
-                              selectedIndex: _selectedIndex,
-                              text: 'Shirt',
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomText(
+                        text: 'Create Your\nAvatar',
+                        color: CustomColors.textWhiteColor,
+                        fontSize: 36.sp,
+                        fontWeight: FontWeight.w600,
+                        maxLines: 2,
+                        alignment: TextAlign.start,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ...[
+                            InkWell(
+                              splashColor: CustomColors.transparentColor,
+                              onTap: () {
+                                setState(() {
+                                  _selectedIndex = 0;
+                                });
+                              },
+                              child: FeatureButton(
+                                index: 0,
+                                selectedIndex: _selectedIndex,
+                                text: 'Shirt',
+                              ),
                             ),
-                          ),
-                          InkWell(
-                            splashColor: CustomColors.transparentColor,
-                            onTap: () {
-                              setState(() {
-                                _selectedIndex = 1;
-                              });
-                            },
-                            child: FeatureButton(
-                              index: 1,
-                              selectedIndex: _selectedIndex,
-                              text: 'Shorts',
+                            InkWell(
+                              splashColor: CustomColors.transparentColor,
+                              onTap: () {
+                                setState(() {
+                                  _selectedIndex = 1;
+                                });
+                              },
+                              child: FeatureButton(
+                                index: 1,
+                                selectedIndex: _selectedIndex,
+                                text: 'Shorts',
+                              ),
                             ),
-                          ),
-                          InkWell(
-                            splashColor: CustomColors.transparentColor,
-                            onTap: () {
-                              setState(() {
-                                _selectedIndex = 2;
-                              });
-                            },
-                            child: FeatureButton(
-                              index: 2,
-                              selectedIndex: _selectedIndex,
-                              text: 'Legs',
+                            InkWell(
+                              splashColor: CustomColors.transparentColor,
+                              onTap: () {
+                                setState(() {
+                                  _selectedIndex = 2;
+                                });
+                              },
+                              child: FeatureButton(
+                                index: 2,
+                                selectedIndex: _selectedIndex,
+                                text: 'Legs',
+                              ),
                             ),
-                          ),
-                          InkWell(
-                            splashColor: CustomColors.transparentColor,
-                            onTap: () {
-                              setState(() {
-                                _selectedIndex = 3;
-                              });
-                            },
-                            child: FeatureButton(
-                              index: 3,
-                              selectedIndex: _selectedIndex,
-                              text: 'Shoes',
+                            InkWell(
+                              splashColor: CustomColors.transparentColor,
+                              onTap: () {
+                                setState(() {
+                                  _selectedIndex = 3;
+                                });
+                              },
+                              child: FeatureButton(
+                                index: 3,
+                                selectedIndex: _selectedIndex,
+                                text: 'Shoes',
+                              ),
                             ),
-                          ),
+                          ],
                         ],
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ...[
-                          InkWell(
-                            splashColor: CustomColors.transparentColor,
-                            onTap: () {
-                              setState(() {
-                                _selectedIndex = 4;
-                              });
-                            },
-                            child: FeatureButton(
-                              index: 4,
-                              selectedIndex: _selectedIndex,
-                              text: 'Face',
+                      ),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ...[
+                            InkWell(
+                              splashColor: CustomColors.transparentColor,
+                              onTap: () {
+                                setState(() {
+                                  _selectedIndex = 4;
+                                });
+                              },
+                              child: FeatureButton(
+                                index: 4,
+                                selectedIndex: _selectedIndex,
+                                text: 'Face',
+                              ),
                             ),
-                          ),
-                          InkWell(
-                            splashColor: CustomColors.transparentColor,
-                            onTap: () {
-                              setState(() {
-                                _selectedIndex = 5;
-                              });
-                            },
-                            child: FeatureButton(
-                              index: 5,
-                              selectedIndex: _selectedIndex,
-                              text: 'Hair',
+                            InkWell(
+                              splashColor: CustomColors.transparentColor,
+                              onTap: () {
+                                setState(() {
+                                  _selectedIndex = 5;
+                                });
+                              },
+                              child: FeatureButton(
+                                index: 5,
+                                selectedIndex: _selectedIndex,
+                                text: 'Hair',
+                              ),
                             ),
-                          ),
-                          InkWell(
-                            splashColor: CustomColors.transparentColor,
-                            onTap: () {
-                              setState(() {
-                                _selectedIndex = 6;
-                              });
-                            },
-                            child: FeatureButton(
-                              index: 6,
-                              selectedIndex: _selectedIndex,
-                              text: 'Nose',
+                            InkWell(
+                              splashColor: CustomColors.transparentColor,
+                              onTap: () {
+                                setState(() {
+                                  _selectedIndex = 6;
+                                });
+                              },
+                              child: FeatureButton(
+                                index: 6,
+                                selectedIndex: _selectedIndex,
+                                text: 'Nose',
+                              ),
                             ),
-                          ),
-                          InkWell(
-                            splashColor: CustomColors.transparentColor,
-                            onTap: () {
-                              setState(() {
-                                _selectedIndex = 7;
-                              });
-                            },
-                            child: FeatureButton(
-                              index: 7,
-                              selectedIndex: _selectedIndex,
-                              text: 'Eyes',
+                            InkWell(
+                              splashColor: CustomColors.transparentColor,
+                              onTap: () {
+                                setState(() {
+                                  _selectedIndex = 7;
+                                });
+                              },
+                              child: FeatureButton(
+                                index: 7,
+                                selectedIndex: _selectedIndex,
+                                text: 'Eyes',
+                              ),
                             ),
-                          ),
+                          ],
                         ],
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ...[
-                          InkWell(
-                            splashColor: CustomColors.transparentColor,
-                            onTap: () {
-                              setState(() {
-                                _selectedIndex = 8;
-                              });
-                            },
-                            child: FeatureButton(
-                              index: 8,
-                              selectedIndex: _selectedIndex,
-                              text: 'Brows',
+                      ),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ...[
+                            InkWell(
+                              splashColor: CustomColors.transparentColor,
+                              onTap: () {
+                                setState(() {
+                                  _selectedIndex = 8;
+                                });
+                              },
+                              child: FeatureButton(
+                                index: 8,
+                                selectedIndex: _selectedIndex,
+                                text: 'Brows',
+                              ),
                             ),
-                          ),
-                          InkWell(
-                            splashColor: CustomColors.transparentColor,
-                            onTap: () {
-                              setState(() {
-                                _selectedIndex = 9;
-                              });
-                            },
-                            child: FeatureButton(
-                              index: 9,
-                              selectedIndex: _selectedIndex,
-                              text: 'Mouth',
+                            InkWell(
+                              splashColor: CustomColors.transparentColor,
+                              onTap: () {
+                                setState(() {
+                                  _selectedIndex = 9;
+                                });
+                              },
+                              child: FeatureButton(
+                                index: 9,
+                                selectedIndex: _selectedIndex,
+                                text: 'Mouth',
+                              ),
                             ),
-                          ),
+                          ],
                         ],
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    featureAssets(_selectedIndex),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    Center(child: AvatarBox()),
-                  ],
+                      ),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                      featureAssets(_selectedIndex),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                      const Center(child: AvatarBox()),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                      CustomButton(
+                        text: 'Continue',
+                        onTap: () {
+                          Get.off(
+                            HomePage(userRepository: widget.userRepository),
+                          );
+                        },
+                      ),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -318,27 +338,27 @@ class FeatureButton extends StatelessWidget {
 featureAssets(int index) {
   switch (index) {
     case 0:
-      return Shirt();
+      return const Shirt();
     case 1:
-      return Shorts();
+      return const Shorts();
     case 2:
-      return Legs();
+      return const Legs();
     case 3:
-      return Shoe();
+      return const Shoe();
     case 4:
-      return Face();
+      return const Face();
     case 5:
-      return Hair();
+      return const Hair();
     case 6:
-      return Nose();
+      return const Nose();
     case 7:
-      return Eyes();
+      return const Eyes();
     case 8:
-      return EyesBrows();
+      return const EyesBrows();
     case 9:
-      return Mouth();
+      return const Mouth();
     default:
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
   }
 }
 
@@ -599,6 +619,7 @@ class _AvatarBoxState extends State<AvatarBox> {
 }
 
 class Shirt extends StatelessWidget {
+  const Shirt({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -831,6 +852,7 @@ class Hair extends StatelessWidget {
 }
 
 class Face extends StatelessWidget {
+  const Face({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(

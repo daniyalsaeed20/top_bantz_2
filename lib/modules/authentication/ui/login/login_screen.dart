@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use, use_build_context_synchronously, avoid_print, must_be_immutable
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -64,12 +65,21 @@ class Ui extends StatelessWidget {
             if (value) {
               openSnackbar(
                   title: 'Attempting Login', text: 'Please hold on...');
-              await _authController.loginUser(
-                email: emailController.text,
-                password: passwordController.text,
-              );
-              _authController.successLogin.value = true;
-              _authController.attemptLogin.value = false;
+              try {
+                await _authController.loginUser(
+                  email: emailController.text,
+                  password: passwordController.text,
+                );
+                print(FirebaseAuth.instance.currentUser!.uid);
+                _authController.userModel =
+                    await userRepository.getUserDocument();
+                if (_authController.userModel.userName != '') {
+                  _authController.successLogin.value = true;
+                  _authController.attemptLogin.value = false;
+                }
+              } catch (e) {
+                print(e);
+              }
             }
           });
           _authController.successLogin.listen(

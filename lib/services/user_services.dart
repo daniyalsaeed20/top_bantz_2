@@ -24,6 +24,17 @@ class UserServices {
     }
   }
 
+  Future updateUserDocument({
+    required Map<String, dynamic> toMap,
+    required userId,
+  }) async {
+    try {
+      await _userCollection.doc(userId).update(toMap);
+    } on Exception catch (err) {
+      print(err);
+    }
+  }
+
   Future<UserModel> getUserDocument() async {
     try {
       await _userCollection

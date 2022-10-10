@@ -10,6 +10,7 @@ class UserModel {
     this.groupId = '',
     this.image = '',
     this.isPremium = false,
+    this.points = 0
   });
 
   String userName;
@@ -21,6 +22,8 @@ class UserModel {
   String image;
   bool isPremium;
 
+  int points;
+
   factory UserModel.fromMap(DocumentSnapshot doc) {
     return UserModel(
       userName: doc["userName"],
@@ -31,6 +34,7 @@ class UserModel {
       groupId: doc['groupId'],
       image: doc['image'],
       isPremium: doc['isPremium'],
+      points: doc['points'],
     );
   }
 
@@ -44,6 +48,7 @@ class UserModel {
       "groupId": groupId,
       "image": image,
       "isPremium": isPremium,
+      "points": points,
     };
   }
 }

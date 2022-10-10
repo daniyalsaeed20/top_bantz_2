@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api, must_be_immutable
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -13,8 +14,9 @@ import 'package:top_bantz_2/repositories/user_repository.dart';
 import 'package:top_bantz_2/services/user_services.dart';
 
 class SelectTeamScreen extends StatefulWidget {
-  const SelectTeamScreen({Key? key}) : super(key: key);
-
+  const SelectTeamScreen({Key? key, required this.userRepository})
+      : super(key: key);
+  final UserRepository userRepository;
   @override
   _SelectTeamScreenState createState() => _SelectTeamScreenState();
 }
@@ -85,7 +87,15 @@ class _SelectTeamScreenState extends State<SelectTeamScreen> {
                 CustomButton(
                   text: 'Continue',
                   onTap: () {
-                    Get.to(() => const SelectSubscriptionScreen());
+                    UserServices().updateUserDocument(
+                      userId: FirebaseAuth.instance.currentUser!.uid,
+                      toMap: _authController.userModel.toMap(),
+                    );
+                    Get.to(
+                      () => SelectSubscriptionScreen(
+                        userRepository: widget.userRepository,
+                      ),
+                    );
                   },
                 )
               ],

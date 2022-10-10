@@ -89,7 +89,9 @@ class _UiState extends State<Ui> {
               title: 'Registration Successful',
               text: 'You are all set, onto next step...');
           _authController.successRegistration.value = false;
-          Get.to(() => const SelectTeamScreen());
+          Get.to(() => SelectTeamScreen(
+                userRepository: widget.userRepository,
+              ));
         }
       });
       _authController.failedRegistration.listen((value) {

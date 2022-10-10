@@ -32,6 +32,7 @@ class Ui extends StatelessWidget {
         );
 
   UserRepository userRepository;
+  late bool isOnlineChecker;
 
   _onBackPressed() {}
 
@@ -49,19 +50,31 @@ class Ui extends StatelessWidget {
       onWillPop: () => _onBackPressed(),
       child: SafeArea(
         child: GetBuilder<AuthController>(initState: (_) async {
+          isOnlineChecker = _authController.checkIsUserSignedIn();
           if (_authController.checkIsUserSignedIn() == true) {
-            Future.delayed(const Duration(milliseconds: 100), () {
-              openSnackbar(
-                  title: 'Attempting auto-login', text: 'Please hold on...');
-            });
-            _authController.userModel = await userRepository.getUserDocument();
-            Get.to(
-              () => MainNavigationPage(
-                userRepository: UserRepository(
-                  userServices: UserServices(),
-                ),
-              ),
-            );
+            try {
+              Future.delayed(const Duration(milliseconds: 100), () {
+                openSnackbar(
+                    title: 'Attempting auto-login', text: 'Please hold on...');
+              });
+              _authController.userModel =
+                  await userRepository.getUserDocument();
+              if (_authController.userModel.userName == '') {
+                isOnlineChecker = false;
+                _authController.update();
+              }
+              if (_authController.userModel.userName != '') {
+                Get.to(
+                  () => MainNavigationPage(
+                    userRepository: UserRepository(
+                      userServices: UserServices(),
+                    ),
+                  ),
+                );
+              }
+            } catch (e) {
+              openSnackbar(title: 'Error', text: e.toString());
+            }
           }
         }, builder: (_) {
           return Scaffold(
@@ -114,7 +127,7 @@ class Ui extends StatelessWidget {
                   SizedBox(
                     height: 14.h,
                   ),
-                  if (_authController.checkIsUserSignedIn() == false)
+                  if (!isOnlineChecker)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -154,7 +167,7 @@ class Ui extends StatelessWidget {
                         ),
                       ],
                     ),
-                  if (_authController.checkIsUserSignedIn() == true)
+                  if (isOnlineChecker)
                     LinearProgressIndicator(
                       color: CustomColors.textYellowColor,
                       backgroundColor: CustomColors.foreGroundColor,
