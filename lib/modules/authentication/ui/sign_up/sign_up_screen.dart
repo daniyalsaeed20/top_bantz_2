@@ -50,13 +50,20 @@ class _UiState extends State<Ui> {
 
   final TextEditingController dateOfBirthController = TextEditingController();
 
-  final AuthController _authController = Get.put(
-    AuthController(
-      userRepository: UserRepository(
-        userServices: UserServices(),
+  late AuthController _authController;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _authController = Get.put(
+      AuthController(
+        userRepository: UserRepository(
+          userServices: UserServices(),
+        ),
       ),
-    ),
-  );
+    );
+  }
 
   /* -------------------------------------------------------------------------- */
 
@@ -69,18 +76,23 @@ class _UiState extends State<Ui> {
       _authController.addListener(() {});
       _authController.attemptRegistration.listen((value) async {
         if (value) {
-          openSnackbar(
-              title: 'Attempting Registration', text: 'Please hold on...');
-          _getRegistrationData(
-            contactNumber: contactNumberController.text,
-            dateOfBirth: dateOfBirthController.text,
-            email: emailController.text,
-            userName: userNameController.text,
-            password: passwordController.text,
-          );
-          await _authController.registerUser();
-          _authController.successRegistration.value = true;
-          _authController.attemptRegistration.value = false;
+          try {
+            openSnackbar(
+                title: 'Attempting Registration', text: 'Please hold on...');
+            _getRegistrationData(
+              contactNumber: contactNumberController.text,
+              dateOfBirth: dateOfBirthController.text,
+              email: emailController.text,
+              userName: userNameController.text,
+              password: passwordController.text,
+            );
+            await _authController.registerUser();
+            _authController.successRegistration.value = true;
+            _authController.attemptRegistration.value = false;
+          } catch (e) {
+            _authController.attemptRegistration.value = false;
+            _authController.failedRegistration.value = true;
+          }
         }
       });
       _authController.successRegistration.listen((value) {
@@ -258,7 +270,7 @@ class _UiState extends State<Ui> {
     required String contactNumber,
     required String password,
   }) {
-    _authController.userModel = UserModel(
+     UserRepository.userModel = UserModel(
       contactNumber: contactNumber,
       dateOfBirth: dateOfBirth,
       email: email,

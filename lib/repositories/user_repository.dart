@@ -12,7 +12,7 @@ class UserRepository {
   /* -------------------------------------------------------------------------- */
 
   UserServices _userServices;
-  late UserModel _userModel;
+  static UserModel userModel = UserModel();
   late String password;
 
   /* -------------------------------------------------------------------------- */
@@ -37,7 +37,7 @@ class UserRepository {
     UserCredential credentials = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(
             email: userModel.email, password: password);
-    _userModel = userModel;
+    userModel = userModel;
     userModel.userId = credentials.user!.uid;
     await _userServices.setUserDocument(
       userModel: userModel,
@@ -72,11 +72,16 @@ class UserRepository {
   /* ---------------------------------- Fetch --------------------------------- */
 
   getUserDocument() async {
-    _userModel = await _userServices.getUserDocument();
-    return _userModel;
+    userModel = await _userServices.getUserDocument();
+    return userModel;
   }
 
-  currentUser() {
-    return _userModel;
+  uploadImage({
+    required String image,
+  }) async {
+    await _userServices.uploadImage(
+      image: image,
+      userModel: userModel,
+    );
   }
 }

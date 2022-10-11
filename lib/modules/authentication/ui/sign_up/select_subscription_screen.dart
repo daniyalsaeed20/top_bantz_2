@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -30,6 +31,17 @@ class SelectSubscriptionScreen extends StatefulWidget {
 }
 
 class _SelectSubscriptionScreenState extends State<SelectSubscriptionScreen> {
+  late AuthController _authController;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _authController =
+        Get.put(AuthController(userRepository: widget.userRepository));
+  }
+
+  Map<String, dynamic>? paymentIntentData;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -55,18 +67,26 @@ class _SelectSubscriptionScreenState extends State<SelectSubscriptionScreen> {
                 SizedBox(
                   height: 27.h,
                 ),
-                for (int i = 0; i < 2; i++) SubscriptionTypeTile(index: i),
+                for (int i = 0; i < 2; i++)
+                  SubscriptionTypeTile(
+                    index: i,
+                    userRepository: widget.userRepository,
+                  ),
                 SizedBox(
                   height: 27.h,
                 ),
                 CustomButton(
                   text: 'Continue',
-                  onTap: () {
-                    Get.to(
-                      () => CreateAvatar(
-                        userRepository: widget.userRepository,
-                      ),
-                    );
+                  onTap: () async {
+                    if (_authController.selectedSubscription.value == 1) {
+                      await makePayment();
+                    } else {
+                      Get.to(
+                        () => CreateAvatar(
+                          userRepository: widget.userRepository,
+                        ),
+                      );
+                    }
                   },
                 )
               ],
@@ -76,25 +96,129 @@ class _SelectSubscriptionScreenState extends State<SelectSubscriptionScreen> {
       ),
     );
   }
+
+  Future<void> makePayment() async {
+    try {
+      paymentIntentData =
+          await createPaymentIntent('20', 'USD'); //json.decode(response.body);
+      // print('Response body==>${response.body.toString()}');
+      await Stripe.instance
+          .initPaymentSheet(
+              paymentSheetParameters: SetupPaymentSheetParameters(
+                  paymentIntentClientSecret:
+                      paymentIntentData!['client_secret'],
+                  applePay: true,
+                  googlePay: true,
+                  testEnv: true,
+                  style: ThemeMode.dark,
+                  merchantCountryCode: 'US',
+                  merchantDisplayName: 'TopBantz'))
+          .then((value) {});
+
+      ///now finally display payment sheeet
+      displayPaymentSheet();
+    } catch (e, s) {
+      print('exception:$e$s');
+    }
+  }
+
+  displayPaymentSheet() async {
+    try {
+      await Stripe.instance
+          .presentPaymentSheet(
+              parameters: PresentPaymentSheetParameters(
+        clientSecret: paymentIntentData!['client_secret'],
+        confirmPayment: true,
+      ))
+          .then((newValue) async {
+        print('payment intent' + paymentIntentData!['id'].toString());
+        print(
+            'payment intent' + paymentIntentData!['client_secret'].toString());
+        print('payment intent' + paymentIntentData!['amount'].toString());
+        print('payment intent' + paymentIntentData.toString());
+        //orderPlaceApi(paymentIntentData!['id'].toString());
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("paid successfully")));
+        await UserServices().updateUserDocument(
+          userId: FirebaseAuth.instance.currentUser!.uid,
+          toMap:  UserRepository.userModel.toMap(),
+        );
+        Get.to(
+          () => CreateAvatar(
+            userRepository: widget.userRepository,
+          ),
+        );
+
+        paymentIntentData = null;
+      }).onError((error, stackTrace) {
+        print('Exception/DISPLAYPAYMENTSHEET==> $error $stackTrace');
+      });
+    } on StripeException catch (e) {
+      print('Exception/DISPLAYPAYMENTSHEET==> $e');
+      showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+                content: Text("Cancelled "),
+              ));
+    } catch (e) {
+      print('$e');
+    }
+  }
+
+  //  Future<Map<String, dynamic>>
+  createPaymentIntent(String amount, String currency) async {
+    try {
+      Map<String, dynamic> body = {
+        'amount': calculateAmount('20'),
+        'currency': currency,
+        'payment_method_types[]': 'card'
+      };
+      print(body);
+      var response = await http.post(
+          Uri.parse('https://api.stripe.com/v1/payment_intents'),
+          body: body,
+          headers: {
+            'Authorization':
+                'Bearer sk_test_51LrPisGcPFPi3K5sIsdEXdX38tLKxSfZaQdfWf9SnF7sXek4RiUUHhGSIKh4oTBZr4YCraMEQZbcomcGePkYvVU900E9sNpO1h',
+            'Content-Type': 'application/x-www-form-urlencoded'
+          });
+      print('Create Intent reponse ===> ${response.body.toString()}');
+      return jsonDecode(response.body);
+    } catch (err) {
+      print('err charging user: ${err.toString()}');
+    }
+  }
+
+  calculateAmount(String amount) {
+    final a = (int.parse(amount)) * 100;
+    return a.toString();
+  }
 }
 
 class SubscriptionTypeTile extends StatefulWidget {
   SubscriptionTypeTile({
     Key? key,
     required this.index,
+    required this.userRepository,
   }) : super(key: key);
 
   int index;
+  UserRepository userRepository;
 
   @override
   State<SubscriptionTypeTile> createState() => _SubscriptionTypeTileState();
 }
 
 class _SubscriptionTypeTileState extends State<SubscriptionTypeTile> {
-  final AuthController _authController = Get.put(AuthController(
-      userRepository: UserRepository(userServices: UserServices())));
+  late AuthController _authController;
 
-  Map<String, dynamic>? paymentIntentData;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _authController =
+        Get.put(AuthController(userRepository: widget.userRepository));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,11 +229,8 @@ class _SubscriptionTypeTileState extends State<SubscriptionTypeTile> {
           onTap: () async {
             _authController.selectedSubscription.value = widget.index;
             widget.index == 0
-                ? _authController.userModel.isPremium = false
-                : _authController.userModel.isPremium = true;
-            if (widget.index == 1) {
-              await makePayment();
-            }
+                ?  UserRepository.userModel.isPremium = false
+                :  UserRepository.userModel.isPremium = true;
           },
           child: Stack(
             alignment: AlignmentDirectional.center,
@@ -188,179 +309,5 @@ class _SubscriptionTypeTileState extends State<SubscriptionTypeTile> {
         ),
       );
     });
-  }
-
-  // Future<void> makePayment() async {
-  //   try {
-  //     paymentIntentData = await createPaymentIntent('20', 'USD');
-
-  //     await Stripe.instance.initPaymentSheet(
-  //       paymentSheetParameters: SetupPaymentSheetParameters(
-  //           paymentIntentClientSecret: paymentIntentData!['client_secret'],
-  //           style: ThemeMode.dark,
-  //           applePay: true,
-  //           googlePay: true,
-  //           merchantCountryCode: 'US',
-  //           merchantDisplayName: 'TopBantz'),
-  //     );
-  //     displayPaymentSheet();
-  //   } catch (err) {
-  //     log(err.toString());
-  //   }
-  // }
-
-  // displayPaymentSheet() async {
-  //   try {
-  //     await Stripe.instance
-  //         .presentPaymentSheet(
-  //       parameters: PresentPaymentSheetParameters(
-  //         clientSecret: paymentIntentData!['client_secret'],
-  //         confirmPayment: true,
-  //       ),
-  //     )
-  //         .then((newValue) {
-  //       print('payment intent' + paymentIntentData!['id'].toString());
-  //       print(
-  //           'payment intent' + paymentIntentData!['client_secret'].toString());
-  //       print('payment intent' + paymentIntentData!['amount'].toString());
-  //       print('payment intent' + paymentIntentData.toString());
-  //       //orderPlaceApi(paymentIntentData!['id'].toString());
-  //       ScaffoldMessenger.of(context)
-  //           .showSnackBar(SnackBar(content: Text("paid successfully")));
-
-  //       paymentIntentData = null;
-  //     }).onError((error, stackTrace) {
-  //       print('Exception/DISPLAYPAYMENTSHEET==> $error $stackTrace');
-  //     });
-  //     setState(() {
-  //       paymentIntentData = null;
-  //     });
-
-  //     Get.snackbar('Success', 'Payment made successfully');
-  //   } on StripeException catch (e) {
-  //     log(e.toString());
-  //     showDialog(
-  //         context: context,
-  //         builder: (_) => AlertDialog(
-  //               content: CustomText(text: 'Canceled'),
-  //             ));
-  //   }catch (e) {
-  //     print('$e');
-  //   }
-  // }
-
-  // createPaymentIntent(String amount, String currency) async {
-  //   try {
-  //     Map<String, dynamic> body = {
-  //       'amount': calculateAmount(amount),
-  //       'currency': currency,
-  //       'payment_method_types[]': 'card',
-  //     };
-  //     http.Response response = await http.post(
-  //       Uri.parse('https://api.stripe.com/v1/payment_intents'),
-  //       body: body,
-  //       headers: {
-  //         'Authorization':
-  //             'Bearer sk_test_51LrPisGcPFPi3K5sIsdEXdX38tLKxSfZaQdfWf9SnF7sXek4RiUUHhGSIKh4oTBZr4YCraMEQZbcomcGePkYvVU900E9sNpO1h',
-  //         'Content-Type': 'application/x-www-form-urlencoded'
-  //       },
-  //     );
-
-  //     return jsonDecode(response.body.toString());
-  //   } catch (err) {
-  //     log('Exception: $err');
-  //   }
-  // }
-
-  // calculateAmount(String amount) {
-  //   return (int.parse(amount) * 100).toString();
-  // }
-
-  Future<void> makePayment() async {
-    try {
-      paymentIntentData =
-          await createPaymentIntent('20', 'USD'); //json.decode(response.body);
-      // print('Response body==>${response.body.toString()}');
-      await Stripe.instance
-          .initPaymentSheet(
-              paymentSheetParameters: SetupPaymentSheetParameters(
-                  paymentIntentClientSecret:
-                      paymentIntentData!['client_secret'],
-                  applePay: true,
-                  googlePay: true,
-                  testEnv: true,
-                  style: ThemeMode.dark,
-                  merchantCountryCode: 'US',
-                  merchantDisplayName: 'TopBantz'))
-          .then((value) {});
-
-      ///now finally display payment sheeet
-      displayPaymentSheet();
-    } catch (e, s) {
-      print('exception:$e$s');
-    }
-  }
-
-  displayPaymentSheet() async {
-    try {
-      await Stripe.instance
-          .presentPaymentSheet(
-              parameters: PresentPaymentSheetParameters(
-        clientSecret: paymentIntentData!['client_secret'],
-        confirmPayment: true,
-      ))
-          .then((newValue) {
-        print('payment intent' + paymentIntentData!['id'].toString());
-        print(
-            'payment intent' + paymentIntentData!['client_secret'].toString());
-        print('payment intent' + paymentIntentData!['amount'].toString());
-        print('payment intent' + paymentIntentData.toString());
-        //orderPlaceApi(paymentIntentData!['id'].toString());
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("paid successfully")));
-
-        paymentIntentData = null;
-      }).onError((error, stackTrace) {
-        print('Exception/DISPLAYPAYMENTSHEET==> $error $stackTrace');
-      });
-    } on StripeException catch (e) {
-      print('Exception/DISPLAYPAYMENTSHEET==> $e');
-      showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-                content: Text("Cancelled "),
-              ));
-    } catch (e) {
-      print('$e');
-    }
-  }
-
-  //  Future<Map<String, dynamic>>
-  createPaymentIntent(String amount, String currency) async {
-    try {
-      Map<String, dynamic> body = {
-        'amount': calculateAmount('20'),
-        'currency': currency,
-        'payment_method_types[]': 'card'
-      };
-      print(body);
-      var response = await http.post(
-          Uri.parse('https://api.stripe.com/v1/payment_intents'),
-          body: body,
-          headers: {
-            'Authorization':
-                'Bearer sk_test_51LrPisGcPFPi3K5sIsdEXdX38tLKxSfZaQdfWf9SnF7sXek4RiUUHhGSIKh4oTBZr4YCraMEQZbcomcGePkYvVU900E9sNpO1h',
-            'Content-Type': 'application/x-www-form-urlencoded'
-          });
-      print('Create Intent reponse ===> ${response.body.toString()}');
-      return jsonDecode(response.body);
-    } catch (err) {
-      print('err charging user: ${err.toString()}');
-    }
-  }
-
-  calculateAmount(String amount) {
-    final a = (int.parse(amount)) * 100;
-    return a.toString();
   }
 }

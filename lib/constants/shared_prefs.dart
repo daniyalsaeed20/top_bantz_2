@@ -15,7 +15,7 @@ class MySharedPrefrences {
   }
 
   static Future<UserModel> getUserData() async {
-    late UserModel _userModel;
+    late UserModel userModel;
     await SharedPreferences.getInstance().then((value) {
       // null hendling
       value.getString(userIdKey) ?? value.setString(userIdKey, "");
@@ -24,7 +24,7 @@ class MySharedPrefrences {
 
       value.getString(userEmailKey) ?? value.setString(userEmailKey, "");
 
-      _userModel = UserModel(
+      userModel = UserModel(
         // uid: value.getInt(Constant.userIdKey),
         userId: value.getString(userIdKey)!,
         userName: value.getString(userUserNameKey)!,
@@ -33,7 +33,7 @@ class MySharedPrefrences {
       );
     });
 
-    return _userModel;
+    return userModel;
   }
 
   static Future clearUserData() async {

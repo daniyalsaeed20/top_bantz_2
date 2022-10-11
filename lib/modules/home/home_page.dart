@@ -398,7 +398,7 @@ class Lobbies extends StatelessWidget {
                   () => GroupChatScreen(
                     groupChatId: '',
                     groupName: '',
-                    userModel: _userRepository.currentUser(),
+                    userModel: UserRepository.userModel,
                   ),
                 );
               },

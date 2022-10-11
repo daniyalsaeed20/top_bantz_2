@@ -22,8 +22,15 @@ class SelectTeamScreen extends StatefulWidget {
 }
 
 class _SelectTeamScreenState extends State<SelectTeamScreen> {
-  final AuthController _authController = Get.put(AuthController(
-      userRepository: UserRepository(userServices: UserServices())));
+  late AuthController _authController;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _authController =
+        Get.put(AuthController(userRepository: widget.userRepository));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,12 +79,13 @@ class _SelectTeamScreenState extends State<SelectTeamScreen> {
                             splashColor: CustomColors.transparentColor,
                             onTap: () {
                               _authController.teamIndex.value = i;
-                              _authController.userModel.groupId =
+                               UserRepository.userModel.groupId =
                                   _authController.teamGroups[i];
                             },
                             child: TeamLogoCard(
                               image: _authController.teamImages[i],
                               index: i,
+                              userRepository: widget.userRepository,
                             ),
                           ),
                       ],
@@ -89,7 +97,7 @@ class _SelectTeamScreenState extends State<SelectTeamScreen> {
                   onTap: () {
                     UserServices().updateUserDocument(
                       userId: FirebaseAuth.instance.currentUser!.uid,
-                      toMap: _authController.userModel.toMap(),
+                      toMap:  UserRepository.userModel.toMap(),
                     );
                     Get.to(
                       () => SelectSubscriptionScreen(
@@ -107,18 +115,32 @@ class _SelectTeamScreenState extends State<SelectTeamScreen> {
   }
 }
 
-class TeamLogoCard extends StatelessWidget {
+class TeamLogoCard extends StatefulWidget {
   TeamLogoCard({
     Key? key,
     required this.image,
     required this.index,
+    required this.userRepository,
   }) : super(key: key);
 
   String image;
   int index;
+  UserRepository userRepository;
 
-  final AuthController _authController = Get.put(AuthController(
-      userRepository: UserRepository(userServices: UserServices())));
+  @override
+  State<TeamLogoCard> createState() => _TeamLogoCardState();
+}
+
+class _TeamLogoCardState extends State<TeamLogoCard> {
+  late AuthController _authController;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _authController =
+        Get.put(AuthController(userRepository: widget.userRepository));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,13 +151,13 @@ class TeamLogoCard extends StatelessWidget {
           width: 71.w,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(Design.radius),
-            color: index != _authController.teamIndex.value
+            color: widget.index != _authController.teamIndex.value
                 ? CustomColors.foreGroundColor
                 : CustomColors.textYellowColor,
             image: DecorationImage(
               fit: BoxFit.contain,
               image: AssetImage(
-                image,
+                widget.image,
               ),
             ),
           ),

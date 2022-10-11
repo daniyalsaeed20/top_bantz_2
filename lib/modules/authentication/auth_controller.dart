@@ -23,7 +23,6 @@ class AuthController extends GetxController {
   /* -------------------------------------------------------------------------- */
   RxBool isPasswordVisible = true.obs;
   RxInt teamIndex = 999.obs;
-  UserModel userModel = UserModel();
   late String password;
 
   RxInt selectedSubscription = 2.obs;
@@ -87,7 +86,7 @@ class AuthController extends GetxController {
 
   registerUser() async {
     await _userRepository.registerWithCredentials(
-      userModel: userModel,
+      userModel:  UserRepository.userModel,
       password: password,
     );
   }
@@ -109,6 +108,6 @@ class AuthController extends GetxController {
 
   getUserData() async {
     await _userRepository.getUserDocument();
-    userModel = _userRepository.currentUser();
+    return UserRepository.userModel;
   }
 }

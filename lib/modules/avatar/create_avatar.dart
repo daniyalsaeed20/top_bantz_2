@@ -1,64 +1,22 @@
 // ignore_for_file: library_private_types_in_public_api, must_be_immutable
 
+import 'dart:developer';
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:top_bantz_2/constants/custom_colors.dart';
 import 'package:top_bantz_2/global/global_view/custom_button.dart';
 import 'package:top_bantz_2/global/global_view/custom_text.dart';
-import 'package:top_bantz_2/modules/home/home_page.dart';
 import 'package:top_bantz_2/repositories/user_repository.dart';
 
+import '../home/main_navigation_page.dart';
 import 'avatar_controller.dart';
 
-List<String> shirtList = [
-  'assets/white_kit/shirt.png',
-  'assets/white_kit/shirt_two.png'
-];
-List<String> legsList = [
-  'assets/white_kit/legs.png',
-];
-List<String> shoeList = [
-  'assets/white_kit/shoe.png',
-];
-List<String> shortsList = [
-  'assets/white_kit/shorts.png',
-];
-List<String> leftArmList = [
-  'assets/white_kit/left_arm.png',
-];
-List<String> rightArmList = [
-  'assets/white_kit/right_arm.png',
-];
-List<String> faceList = [
-  'assets/white_kit/face.png',
-];
-List<String> hairList = [
-  'assets/white_kit/hair.png',
-];
-List<String> eyesList = [
-  'assets/white_kit/eyes.png',
-];
-List<String> noseList = [
-  'assets/white_kit/nose.png',
-];
-List<String> eyeBrowsList = [
-  'assets/white_kit/eye_brows.png',
-];
-List<String> mouthList = [
-  'assets/white_kit/mouth.png',
-];
-
-int selectedShirt = 0;
-int selectedShorts = 0;
-int selectedLegs = 0;
-int selectedShoes = 0;
-int selectedFace = 0;
-int selectedHair = 0;
-int selectedEyes = 0;
-int selectedNose = 0;
-int selectedEyesBrows = 0;
-int selectedMouth = 0;
 AvatarController avatarController = Get.put(AvatarController());
 
 class CreateAvatar extends StatefulWidget {
@@ -264,16 +222,27 @@ class _CreateAvatarState extends State<CreateAvatar> {
                       SizedBox(
                         height: 10.h,
                       ),
-                      const Center(child: AvatarBox()),
+                      Center(child: AvatarBox()),
                       SizedBox(
                         height: 10.h,
                       ),
                       CustomButton(
                         text: 'Continue',
-                        onTap: () {
-                          Get.off(
-                            HomePage(userRepository: widget.userRepository),
-                          );
+                        onTap: () async {
+                          try {
+                            Uint8List? image = await avatarController
+                                .sstController
+                                .captureFromWidget(AvatarBox());
+                            // await saveImage(image);
+
+                            print(image);
+                            Get.offAll(
+                              MainNavigationPage(
+                                  userRepository: widget.userRepository),
+                            );
+                          } catch (e) {
+                            log(e.toString());
+                          }
                         },
                       ),
                       SizedBox(
@@ -286,6 +255,15 @@ class _CreateAvatarState extends State<CreateAvatar> {
             ),
           );
         });
+  }
+
+  saveImage(Uint8List bytes) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final image = File(
+        '${directory.path}/flutter/${FirebaseAuth.instance.currentUser!.uid}.png');
+
+    image.writeAsBytesSync(bytes);
+    widget.userRepository.uploadImage(image: image.path);
   }
 }
 
@@ -388,233 +366,240 @@ class AssetCard extends StatelessWidget {
   }
 }
 
-class AvatarBox extends StatefulWidget {
-  const AvatarBox({Key? key}) : super(key: key);
-
-  @override
-  State<AvatarBox> createState() => _AvatarBoxState();
-}
-
-class _AvatarBoxState extends State<AvatarBox> {
+class AvatarBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(3.r),
-      height: 320.h,
-      width: 200.w,
-      decoration: BoxDecoration(
-        color: CustomColors.foreGroundColor,
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            top: 180.h,
-            left: 20.w,
-            right: 20.w,
-            child: Container(
-              margin: EdgeInsets.only(right: 10.w),
-              padding: EdgeInsets.all(3.r),
-              height: 100.h,
-              width: 100.w,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12.r),
-                image: DecorationImage(
-                  image: AssetImage(legsList[selectedLegs]),
-                ),
-              ),
+    return GetBuilder<AvatarController>(
+        init: AvatarController(),
+        builder: (_) {
+          return Container(
+            padding: EdgeInsets.all(3.r),
+            height: 320.h,
+            width: 200.w,
+            decoration: BoxDecoration(
+              color: CustomColors.foreGroundColor,
+              borderRadius: BorderRadius.circular(12.r),
             ),
-          ),
-          Positioned(
-            top: 130.h,
-            left: 20.w,
-            right: 20.w,
-            child: Container(
-              margin: EdgeInsets.only(right: 10.w),
-              padding: EdgeInsets.all(3.r),
-              height: 70.h,
-              width: 70.w,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12.r),
-                image: DecorationImage(
-                  image: AssetImage(shortsList[selectedShorts]),
+            child: Stack(
+              children: [
+                Positioned(
+                  top: 180.h,
+                  left: 20.w,
+                  right: 20.w,
+                  child: Container(
+                    margin: EdgeInsets.only(right: 10.w),
+                    padding: EdgeInsets.all(3.r),
+                    height: 100.h,
+                    width: 100.w,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.r),
+                      image: DecorationImage(
+                        image: AssetImage(avatarController
+                            .legsList[avatarController.selectedLegs]),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: 80.h,
-            left: 20.w,
-            right: 75.w,
-            child: Container(
-              margin: EdgeInsets.only(right: 10.w),
-              padding: EdgeInsets.all(3.r),
-              height: 80.h,
-              width: 80.w,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12.r),
-                image: const DecorationImage(
-                  image: AssetImage('assets/white_kit/left_arm.png'),
+                Positioned(
+                  top: 130.h,
+                  left: 20.w,
+                  right: 20.w,
+                  child: Container(
+                    margin: EdgeInsets.only(right: 10.w),
+                    padding: EdgeInsets.all(3.r),
+                    height: 70.h,
+                    width: 70.w,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.r),
+                      image: DecorationImage(
+                        image: AssetImage(avatarController
+                            .shortsList[avatarController.selectedShorts]),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: 80.h,
-            left: 75.w,
-            right: 20.w,
-            child: Container(
-              margin: EdgeInsets.only(right: 10.w),
-              padding: EdgeInsets.all(3.r),
-              height: 80.h,
-              width: 80.w,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12.r),
-                image: const DecorationImage(
-                  image: AssetImage('assets/white_kit/right_arm.png'),
+                Positioned(
+                  top: 80.h,
+                  left: 20.w,
+                  right: 75.w,
+                  child: Container(
+                    margin: EdgeInsets.only(right: 10.w),
+                    padding: EdgeInsets.all(3.r),
+                    height: 80.h,
+                    width: 80.w,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.r),
+                      image: const DecorationImage(
+                        image: AssetImage('assets/white_kit/left_arm.png'),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: 20.h,
-            left: 20.w,
-            right: 20.w,
-            child: Container(
-              margin: EdgeInsets.only(right: 10.w),
-              padding: EdgeInsets.all(3.r),
-              height: 60.h,
-              width: 60.w,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12.r),
-                image: DecorationImage(
-                  image: AssetImage(faceList[selectedFace]),
+                Positioned(
+                  top: 80.h,
+                  left: 75.w,
+                  right: 20.w,
+                  child: Container(
+                    margin: EdgeInsets.only(right: 10.w),
+                    padding: EdgeInsets.all(3.r),
+                    height: 80.h,
+                    width: 80.w,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.r),
+                      image: const DecorationImage(
+                        image: AssetImage('assets/white_kit/right_arm.png'),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: 12.h,
-            left: 20.w,
-            right: 20.w,
-            child: Container(
-              margin: EdgeInsets.only(right: 10.w),
-              padding: EdgeInsets.all(3.r),
-              height: 30.h,
-              width: 30.w,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12.r),
-                image: DecorationImage(
-                  image: AssetImage(hairList[selectedHair]),
+                Positioned(
+                  top: 20.h,
+                  left: 20.w,
+                  right: 20.w,
+                  child: Container(
+                    margin: EdgeInsets.only(right: 10.w),
+                    padding: EdgeInsets.all(3.r),
+                    height: 60.h,
+                    width: 60.w,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.r),
+                      image: DecorationImage(
+                        image: AssetImage(avatarController
+                            .faceList[avatarController.selectedFace]),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: 33.h,
-            left: 20.w,
-            right: 20.w,
-            child: Container(
-              margin: EdgeInsets.only(right: 10.w),
-              padding: EdgeInsets.all(3.r),
-              height: 3.h,
-              width: 3.w,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12.r),
-                image: DecorationImage(
-                  image: AssetImage(eyeBrowsList[selectedEyesBrows]),
+                Positioned(
+                  top: 12.h,
+                  left: 20.w,
+                  right: 20.w,
+                  child: Container(
+                    margin: EdgeInsets.only(right: 10.w),
+                    padding: EdgeInsets.all(3.r),
+                    height: 30.h,
+                    width: 30.w,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.r),
+                      image: DecorationImage(
+                        image: AssetImage(avatarController
+                            .hairList[avatarController.selectedHair]),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: 35.h,
-            left: 20.w,
-            right: 20.w,
-            child: Container(
-              margin: EdgeInsets.only(right: 10.w),
-              padding: EdgeInsets.all(3.r),
-              height: 4.h,
-              width: 4.w,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12.r),
-                image: DecorationImage(
-                  image: AssetImage(eyesList[selectedEyes]),
+                Positioned(
+                  top: 33.h,
+                  left: 20.w,
+                  right: 20.w,
+                  child: Container(
+                    margin: EdgeInsets.only(right: 10.w),
+                    padding: EdgeInsets.all(3.r),
+                    height: 3.h,
+                    width: 3.w,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.r),
+                      image: DecorationImage(
+                        image: AssetImage(avatarController
+                            .eyeBrowsList[avatarController.selectedEyesBrows]),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: 38.h,
-            left: 20.w,
-            right: 20.w,
-            child: Container(
-              margin: EdgeInsets.only(right: 10.w),
-              padding: EdgeInsets.all(3.r),
-              height: 10.h,
-              width: 10.w,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12.r),
-                image: DecorationImage(
-                  image: AssetImage(noseList[selectedNose]),
+                Positioned(
+                  top: 35.h,
+                  left: 20.w,
+                  right: 20.w,
+                  child: Container(
+                    margin: EdgeInsets.only(right: 10.w),
+                    padding: EdgeInsets.all(3.r),
+                    height: 4.h,
+                    width: 4.w,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.r),
+                      image: DecorationImage(
+                        image: AssetImage(avatarController
+                            .eyesList[avatarController.selectedEyes]),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: 47.h,
-            left: 20.w,
-            right: 20.w,
-            child: Container(
-              margin: EdgeInsets.only(right: 10.w),
-              padding: EdgeInsets.all(3.r),
-              height: 7.h,
-              width: 7.w,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12.r),
-                image: DecorationImage(
-                  image: AssetImage(mouthList[selectedMouth]),
+                Positioned(
+                  top: 38.h,
+                  left: 20.w,
+                  right: 20.w,
+                  child: Container(
+                    margin: EdgeInsets.only(right: 10.w),
+                    padding: EdgeInsets.all(3.r),
+                    height: 10.h,
+                    width: 10.w,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.r),
+                      image: DecorationImage(
+                        image: AssetImage(avatarController
+                            .noseList[avatarController.selectedNose]),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: 60.h,
-            left: 20.w,
-            right: 20.w,
-            child: Container(
-              margin: EdgeInsets.only(right: 10.w),
-              padding: EdgeInsets.all(3.r),
-              height: 80.h,
-              width: 80.w,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12.r),
-                image: DecorationImage(
-                  image: AssetImage(shirtList[selectedShirt]),
+                Positioned(
+                  top: 47.h,
+                  left: 20.w,
+                  right: 20.w,
+                  child: Container(
+                    margin: EdgeInsets.only(right: 10.w),
+                    padding: EdgeInsets.all(3.r),
+                    height: 7.h,
+                    width: 7.w,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.r),
+                      image: DecorationImage(
+                        image: AssetImage(avatarController
+                            .mouthList[avatarController.selectedMouth]),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: 270.h,
-            left: 20.w,
-            right: 20.w,
-            child: Container(
-              margin: EdgeInsets.only(right: 10.w),
-              padding: EdgeInsets.all(3.r),
-              height: 21.h,
-              width: 30.w,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12.r),
-                image: DecorationImage(
-                  image: AssetImage(shoeList[selectedShoes]),
+                Positioned(
+                  top: 60.h,
+                  left: 20.w,
+                  right: 20.w,
+                  child: Container(
+                    margin: EdgeInsets.only(right: 10.w),
+                    padding: EdgeInsets.all(3.r),
+                    height: 80.h,
+                    width: 80.w,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.r),
+                      image: DecorationImage(
+                        image: AssetImage(avatarController
+                            .shirtList[avatarController.selectedShirt]),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                Positioned(
+                  top: 270.h,
+                  left: 20.w,
+                  right: 20.w,
+                  child: Container(
+                    margin: EdgeInsets.only(right: 10.w),
+                    padding: EdgeInsets.all(3.r),
+                    height: 21.h,
+                    width: 30.w,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.r),
+                      image: DecorationImage(
+                        image: AssetImage(avatarController
+                            .shoeList[avatarController.selectedShoes]),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
-    );
+          );
+        });
   }
 }
 
@@ -622,24 +607,28 @@ class Shirt extends StatelessWidget {
   const Shirt({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          for (int i = 0; i < shirtList.length; i++)
-            InkWell(
-              onTap: () {
-                selectedShirt = i;
-                avatarController.update();
-              },
-              child: AssetCard(
-                isSelected: selectedShirt == i,
-                imageLink: shirtList[i],
-              ),
+    return GetBuilder<AvatarController>(
+        init: AvatarController(),
+        builder: (_) {
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                for (int i = 0; i < avatarController.shirtList.length; i++)
+                  InkWell(
+                    onTap: () {
+                      avatarController.selectedShirt = i;
+                      avatarController.update();
+                    },
+                    child: AssetCard(
+                      isSelected: avatarController.selectedShirt == i,
+                      imageLink: avatarController.shirtList[i],
+                    ),
+                  ),
+              ],
             ),
-        ],
-      ),
-    );
+          );
+        });
   }
 }
 
@@ -648,24 +637,28 @@ class Shorts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          for (int i = 0; i < shortsList.length; i++)
-            InkWell(
-              onTap: () {
-                selectedShorts = i;
-                avatarController.update();
-              },
-              child: AssetCard(
-                isSelected: selectedShorts == i,
-                imageLink: shortsList[i],
-              ),
+    return GetBuilder<AvatarController>(
+        init: AvatarController(),
+        builder: (_) {
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                for (int i = 0; i < avatarController.shortsList.length; i++)
+                  InkWell(
+                    onTap: () {
+                      avatarController.selectedShorts = i;
+                      avatarController.update();
+                    },
+                    child: AssetCard(
+                      isSelected: avatarController.selectedShorts == i,
+                      imageLink: avatarController.shortsList[i],
+                    ),
+                  ),
+              ],
             ),
-        ],
-      ),
-    );
+          );
+        });
   }
 }
 
@@ -674,24 +667,28 @@ class Legs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          for (int i = 0; i < legsList.length; i++)
-            InkWell(
-              onTap: () {
-                selectedLegs = i;
-                avatarController.update();
-              },
-              child: AssetCard(
-                isSelected: selectedLegs == i,
-                imageLink: legsList[i],
-              ),
+    return GetBuilder<AvatarController>(
+        init: AvatarController(),
+        builder: (_) {
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                for (int i = 0; i < avatarController.legsList.length; i++)
+                  InkWell(
+                    onTap: () {
+                      avatarController.selectedLegs = i;
+                      avatarController.update();
+                    },
+                    child: AssetCard(
+                      isSelected: avatarController.selectedLegs == i,
+                      imageLink: avatarController.legsList[i],
+                    ),
+                  ),
+              ],
             ),
-        ],
-      ),
-    );
+          );
+        });
   }
 }
 
@@ -700,24 +697,28 @@ class Shoe extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          for (int i = 0; i < shoeList.length; i++)
-            InkWell(
-              onTap: () {
-                selectedShoes = i;
-                avatarController.update();
-              },
-              child: AssetCard(
-                isSelected: selectedShoes == i,
-                imageLink: shoeList[i],
-              ),
+    return GetBuilder<AvatarController>(
+        init: AvatarController(),
+        builder: (_) {
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                for (int i = 0; i < avatarController.shoeList.length; i++)
+                  InkWell(
+                    onTap: () {
+                      avatarController.selectedShoes = i;
+                      avatarController.update();
+                    },
+                    child: AssetCard(
+                      isSelected: avatarController.selectedShoes == i,
+                      imageLink: avatarController.shoeList[i],
+                    ),
+                  ),
+              ],
             ),
-        ],
-      ),
-    );
+          );
+        });
   }
 }
 
@@ -726,24 +727,28 @@ class Eyes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          for (int i = 0; i < eyesList.length; i++)
-            InkWell(
-              onTap: () {
-                selectedEyes = i;
-                avatarController.update();
-              },
-              child: AssetCard(
-                isSelected: selectedEyes == i,
-                imageLink: eyesList[i],
-              ),
+    return GetBuilder<AvatarController>(
+        init: AvatarController(),
+        builder: (_) {
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                for (int i = 0; i < avatarController.eyesList.length; i++)
+                  InkWell(
+                    onTap: () {
+                      avatarController.selectedEyes = i;
+                      avatarController.update();
+                    },
+                    child: AssetCard(
+                      isSelected: avatarController.selectedEyes == i,
+                      imageLink: avatarController.eyesList[i],
+                    ),
+                  ),
+              ],
             ),
-        ],
-      ),
-    );
+          );
+        });
   }
 }
 
@@ -752,24 +757,28 @@ class EyesBrows extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          for (int i = 0; i < eyeBrowsList.length; i++)
-            InkWell(
-              onTap: () {
-                selectedEyesBrows = i;
-                avatarController.update();
-              },
-              child: AssetCard(
-                isSelected: selectedEyesBrows == i,
-                imageLink: eyeBrowsList[i],
-              ),
+    return GetBuilder<AvatarController>(
+        init: AvatarController(),
+        builder: (_) {
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                for (int i = 0; i < avatarController.eyeBrowsList.length; i++)
+                  InkWell(
+                    onTap: () {
+                      avatarController.selectedEyesBrows = i;
+                      avatarController.update();
+                    },
+                    child: AssetCard(
+                      isSelected: avatarController.selectedEyesBrows == i,
+                      imageLink: avatarController.eyeBrowsList[i],
+                    ),
+                  ),
+              ],
             ),
-        ],
-      ),
-    );
+          );
+        });
   }
 }
 
@@ -778,24 +787,28 @@ class Nose extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          for (int i = 0; i < noseList.length; i++)
-            InkWell(
-              onTap: () {
-                selectedNose = i;
-                avatarController.update();
-              },
-              child: AssetCard(
-                isSelected: selectedNose == i,
-                imageLink: noseList[i],
-              ),
+    return GetBuilder<AvatarController>(
+        init: AvatarController(),
+        builder: (_) {
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                for (int i = 0; i < avatarController.noseList.length; i++)
+                  InkWell(
+                    onTap: () {
+                      avatarController.selectedNose = i;
+                      avatarController.update();
+                    },
+                    child: AssetCard(
+                      isSelected: avatarController.selectedNose == i,
+                      imageLink: avatarController.noseList[i],
+                    ),
+                  ),
+              ],
             ),
-        ],
-      ),
-    );
+          );
+        });
   }
 }
 
@@ -804,24 +817,28 @@ class Mouth extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          for (int i = 0; i < mouthList.length; i++)
-            InkWell(
-              onTap: () {
-                selectedMouth = i;
-                avatarController.update();
-              },
-              child: AssetCard(
-                isSelected: selectedMouth == i,
-                imageLink: mouthList[i],
-              ),
+    return GetBuilder<AvatarController>(
+        init: AvatarController(),
+        builder: (_) {
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                for (int i = 0; i < avatarController.mouthList.length; i++)
+                  InkWell(
+                    onTap: () {
+                      avatarController.selectedMouth = i;
+                      avatarController.update();
+                    },
+                    child: AssetCard(
+                      isSelected: avatarController.selectedMouth == i,
+                      imageLink: avatarController.mouthList[i],
+                    ),
+                  ),
+              ],
             ),
-        ],
-      ),
-    );
+          );
+        });
   }
 }
 
@@ -830,24 +847,28 @@ class Hair extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          for (int i = 0; i < hairList.length; i++)
-            InkWell(
-              onTap: () {
-                selectedHair = i;
-                avatarController.update();
-              },
-              child: AssetCard(
-                isSelected: selectedHair == i,
-                imageLink: hairList[i],
-              ),
+    return GetBuilder<AvatarController>(
+        init: AvatarController(),
+        builder: (_) {
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                for (int i = 0; i < avatarController.hairList.length; i++)
+                  InkWell(
+                    onTap: () {
+                      avatarController.selectedHair = i;
+                      avatarController.update();
+                    },
+                    child: AssetCard(
+                      isSelected: avatarController.selectedHair == i,
+                      imageLink: avatarController.hairList[i],
+                    ),
+                  ),
+              ],
             ),
-        ],
-      ),
-    );
+          );
+        });
   }
 }
 
@@ -855,23 +876,27 @@ class Face extends StatelessWidget {
   const Face({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          for (int i = 0; i < faceList.length; i++)
-            InkWell(
-              onTap: () {
-                selectedFace = i;
-                avatarController.update();
-              },
-              child: AssetCard(
-                isSelected: selectedFace == i,
-                imageLink: faceList[i],
-              ),
+    return GetBuilder<AvatarController>(
+        init: AvatarController(),
+        builder: (_) {
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                for (int i = 0; i < avatarController.faceList.length; i++)
+                  InkWell(
+                    onTap: () {
+                      avatarController.selectedFace = i;
+                      avatarController.update();
+                    },
+                    child: AssetCard(
+                      isSelected: avatarController.selectedFace == i,
+                      imageLink: avatarController.faceList[i],
+                    ),
+                  ),
+              ],
             ),
-        ],
-      ),
-    );
+          );
+        });
   }
 }

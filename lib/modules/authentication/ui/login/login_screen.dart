@@ -28,29 +28,37 @@ class LoginScreen extends StatelessWidget {
   }
 }
 
-class Ui extends StatelessWidget {
+class Ui extends StatefulWidget {
   Ui({Key? key, required this.userRepository}) : super(key: key);
   UserRepository userRepository;
-  /* -------------------------------------------------------------------------- */
-  /*                                  Variables                                 */
+
+  @override
+  State<Ui> createState() => _UiState();
+}
+
+class _UiState extends State<Ui> {
   /* -------------------------------------------------------------------------- */
   final TextEditingController emailController = TextEditingController();
+
   final TextEditingController passwordController = TextEditingController();
 
   final GlobalKey<FormState> _loginKey = GlobalKey<FormState>();
 
-  final AuthController _authController = Get.put(
-    AuthController(
-      userRepository: UserRepository(
-        userServices: UserServices(),
+  late AuthController _authController;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    _authController = Get.put(
+      AuthController(
+        userRepository: widget.userRepository,
       ),
-    ),
-  );
+    );
+  }
 
   /* -------------------------------------------------------------------------- */
-  /*                                  Functions                                 */
-  /* -------------------------------------------------------------------------- */
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -71,9 +79,9 @@ class Ui extends StatelessWidget {
                   password: passwordController.text,
                 );
                 print(FirebaseAuth.instance.currentUser!.uid);
-                _authController.userModel =
-                    await userRepository.getUserDocument();
-                if (_authController.userModel.userName != '') {
+                 UserRepository.userModel =
+                    await widget.userRepository.getUserDocument();
+                if ( UserRepository.userModel.userName != '') {
                   _authController.successLogin.value = true;
                   _authController.attemptLogin.value = false;
                 }
@@ -90,9 +98,7 @@ class Ui extends StatelessWidget {
                 _authController.successLogin.value = false;
                 Get.to(
                   () => MainNavigationPage(
-                    userRepository: UserRepository(
-                      userServices: UserServices(),
-                    ),
+                    userRepository: widget.userRepository,
                   ),
                 );
               }
@@ -227,7 +233,8 @@ class Ui extends StatelessWidget {
                                           MaterialPageRoute<void>(
                                             builder: (BuildContext context) =>
                                                 SignUpScreen(
-                                              userRepository: userRepository,
+                                              userRepository:
+                                                  widget.userRepository,
                                             ),
                                           ),
                                         );

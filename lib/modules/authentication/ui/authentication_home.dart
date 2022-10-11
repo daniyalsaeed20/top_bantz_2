@@ -25,24 +25,32 @@ class AuthenticationHome extends StatelessWidget {
   }
 }
 
-class Ui extends StatelessWidget {
+class Ui extends StatefulWidget {
   Ui({Key? key, required this.userRepository})
       : super(
           key: key,
         );
 
   UserRepository userRepository;
-  late bool isOnlineChecker;
 
+  @override
+  State<Ui> createState() => _UiState();
+}
+
+class _UiState extends State<Ui> {
   _onBackPressed() {}
 
-  final AuthController _authController = Get.put(
-    AuthController(
-      userRepository: UserRepository(
-        userServices: UserServices(),
-      ),
-    ),
-  );
+  late AuthController _authController;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    _authController = Get.put(
+      AuthController(userRepository: widget.userRepository),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,28 +58,19 @@ class Ui extends StatelessWidget {
       onWillPop: () => _onBackPressed(),
       child: SafeArea(
         child: GetBuilder<AuthController>(initState: (_) async {
-          isOnlineChecker = _authController.checkIsUserSignedIn();
-          if (_authController.checkIsUserSignedIn() == true) {
+          if (_authController.checkIsUserSignedIn()) {
             try {
               Future.delayed(const Duration(milliseconds: 100), () {
                 openSnackbar(
                     title: 'Attempting auto-login', text: 'Please hold on...');
               });
-              _authController.userModel =
-                  await userRepository.getUserDocument();
-              if (_authController.userModel.userName == '') {
-                isOnlineChecker = false;
-                _authController.update();
-              }
-              if (_authController.userModel.userName != '') {
-                Get.to(
-                  () => MainNavigationPage(
-                    userRepository: UserRepository(
-                      userServices: UserServices(),
-                    ),
-                  ),
-                );
-              }
+               UserRepository.userModel =
+                  await widget.userRepository.getUserDocument();
+              Get.to(
+                () => MainNavigationPage(
+                  userRepository: widget.userRepository
+                ),
+              );
             } catch (e) {
               openSnackbar(title: 'Error', text: e.toString());
             }
@@ -127,7 +126,7 @@ class Ui extends StatelessWidget {
                   SizedBox(
                     height: 14.h,
                   ),
-                  if (!isOnlineChecker)
+                  if (!_authController.checkIsUserSignedIn())
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -140,7 +139,7 @@ class Ui extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => LoginScreen(
-                                      userRepository: userRepository),
+                                      userRepository: widget.userRepository),
                                 ),
                               );
                             },
@@ -155,7 +154,7 @@ class Ui extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => SignUpScreen(
-                                    userRepository: userRepository),
+                                    userRepository: widget.userRepository),
                               ),
                             );
                           },
@@ -167,7 +166,7 @@ class Ui extends StatelessWidget {
                         ),
                       ],
                     ),
-                  if (isOnlineChecker)
+                  if (_authController.checkIsUserSignedIn())
                     LinearProgressIndicator(
                       color: CustomColors.textYellowColor,
                       backgroundColor: CustomColors.foreGroundColor,

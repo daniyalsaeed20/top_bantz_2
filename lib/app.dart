@@ -23,21 +23,21 @@ class App extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           // home: SignalR(),
           // home: CreateAvatar(),
-          home: SelectSubscriptionScreen(
-            userRepository: UserRepository(
-              userServices: UserServices(),
-            ),
-          ),
+          // home: SelectSubscriptionScreen(
+          //   userRepository: UserRepository(
+          //     userServices: UserServices(),
+          //   ),
+          // ),
           // home: EarnCoinPage(
           //   userRepository: UserRepository(
           //     userServices: UserServices(),
           //   ),
           // ),
-          // home: AuthenticationHome(
-          //   userRepository: UserRepository(
-          //     userServices: UserServices(),
-          //   ),
-          // ),
+          home: AuthenticationHome(
+            userRepository: UserRepository(
+              userServices: UserServices(),
+            ),
+          ),
         );
       },
     );
