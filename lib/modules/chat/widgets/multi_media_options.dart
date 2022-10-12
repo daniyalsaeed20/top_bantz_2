@@ -43,12 +43,12 @@ class MultiMediaOption extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: CustomColors.backGroundColor,
+              color: CustomColors.textWhiteColor,
             ),
             CustomText(
               text: title,
               fontSize: 16.sp,
-              color: CustomColors.backGroundColor,
+              color: CustomColors.textWhiteColor,
               maxLines: 2,
             ),
           ],

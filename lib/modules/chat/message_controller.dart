@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:top_bantz_2/constants/shared_prefs.dart';
 import 'package:top_bantz_2/models/user_model.dart';
+import 'package:top_bantz_2/repositories/user_repository.dart';
 import 'package:uuid/uuid.dart';
 
 class MessageController extends GetxController {
@@ -36,11 +36,10 @@ class MessageController extends GetxController {
   }
 
   void onSendMessage({required String id}) async {
-    var userDataModel = await MySharedPrefrences.getUserData();
     try {
       if (sendMessageController.text.isNotEmpty) {
         Map<String, dynamic> chatData = {
-          "sendBy": userDataModel.userName,
+          "sendBy": UserRepository.userModel.userName,
           "message": sendMessageController.text,
           "type": "text",
           "time": FieldValue.serverTimestamp(),
@@ -66,10 +65,9 @@ class MessageController extends GetxController {
     String video = "vid";
     int status = 1;
 
-    var userDataModel = await MySharedPrefrences.getUserData();
 
     Map<String, dynamic> chatData = {
-      "sendBy": userDataModel.userName,
+      "sendBy": UserRepository.userModel.userName,
       "message": 'null',
       "type": "vid",
       "time": FieldValue.serverTimestamp(),
@@ -122,10 +120,9 @@ class MessageController extends GetxController {
     String img = "img";
     int status = 1;
 
-    var userDataModel = await MySharedPrefrences.getUserData();
 
     Map<String, dynamic> chatData = {
-      "sendBy": userDataModel.userName,
+      "sendBy": UserRepository.userModel.userName,
       "message": 'null',
       "type": "img",
       "time": FieldValue.serverTimestamp(),

@@ -31,35 +31,33 @@ class _EarnCoinPageState extends State<EarnCoinPage> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: Expanded(
-        child: Container(
-          color: CustomColors.foreGroundColor,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Spacer(),
-              CustomText(
-                text: 'Your total points are',
-                color: CustomColors.textWhiteColor,
-              ),
-              CustomText(
-                // text: widget.userRepository.currentUser().points.toString(),
-                text: '10',
-                fontWeight: FontWeight.w600,
-                fontSize: 44.sp,
-                color: CustomColors.textYellowColor,
-              ),
-              const Spacer(),
-              Padding(
-                padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: 40.h),
-                child: CustomButton(
-                    text: 'Watch another',
-                    onTap: () {
-                      _adMobHelper.loadRewardAd();
-                    }),
-              ),
-            ],
-          ),
+      child: Container(
+        color: CustomColors.foreGroundColor,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Spacer(),
+            CustomText(
+              text: 'Your total points are',
+              color: CustomColors.textWhiteColor,
+            ),
+            CustomText(
+              // text: widget.userRepository.currentUser().points.toString(),
+              text: '10',
+              fontWeight: FontWeight.w600,
+              fontSize: 44.sp,
+              color: CustomColors.textYellowColor,
+            ),
+            const Spacer(),
+            Padding(
+              padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: 40.h),
+              child: CustomButton(
+                  text: 'Watch another',
+                  onTap: () {
+                    _adMobHelper.loadRewardAd();
+                  }),
+            ),
+          ],
         ),
       ),
     );

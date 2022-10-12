@@ -8,7 +8,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:top_bantz_2/constants/custom_colors.dart';
 import 'package:top_bantz_2/global/global_view/custom_button.dart';
 import 'package:top_bantz_2/global/global_view/custom_text.dart';
@@ -233,7 +235,7 @@ class _CreateAvatarState extends State<CreateAvatar> {
                             Uint8List? image = await avatarController
                                 .sstController
                                 .captureFromWidget(AvatarBox());
-                            // await saveImage(image);
+                            await saveImage(image);
 
                             print(image);
                             Get.offAll(
@@ -258,12 +260,14 @@ class _CreateAvatarState extends State<CreateAvatar> {
   }
 
   saveImage(Uint8List bytes) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final image = File(
-        '${directory.path}/flutter/${FirebaseAuth.instance.currentUser!.uid}.png');
-
-    image.writeAsBytesSync(bytes);
-    widget.userRepository.uploadImage(image: image.path);
+    var x = await getApplicationDocumentsDirectory();
+    // await Permission.storage.request();
+    var y = File(
+        '${x.path}/${FirebaseAuth.instance.currentUser!.uid}-${DateTime.now().millisecondsSinceEpoch}');
+    y.writeAsBytesSync(bytes);
+    // final result = await ImageGallerySaver.saveImage(bytes,
+    //     name: FirebaseAuth.instance.currentUser!.uid);
+    widget.userRepository.uploadImage(image: y.path);
   }
 }
 

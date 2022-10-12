@@ -22,7 +22,7 @@ Widget textBubble(
       if (messageModel.send_by != userModel.userName)
         CustomText(
           alignment: TextAlign.end,
-          text: userModel.userName,
+          text: messageModel.send_by,
           color: CustomColors.textMediumColor,
           fontSize: 12.sp,
         ),

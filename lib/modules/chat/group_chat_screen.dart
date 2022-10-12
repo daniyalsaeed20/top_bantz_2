@@ -267,20 +267,17 @@ class ChatUiSelector extends StatelessWidget {
         messageModel: chatMessageModel,
         userModel: userModel,
       );
-    }
-    if (chatMessageModel.type == 'vid') {
+    } else if (chatMessageModel.type == 'vid') {
       return VideoBox(
         messageModel: chatMessageModel,
         userModel: userModel,
       );
-    }
-    if (chatMessageModel.type == 'img') {
+    } else if (chatMessageModel.type == 'img') {
       return ImageBox(
         messageModel: chatMessageModel,
         userModel: userModel,
       );
-    }
-    if (chatMessageModel.type == 'audio') {
+    } else if (chatMessageModel.type == 'audio') {
       return AudioBox(
         messageModel: chatMessageModel,
         userModel: userModel,

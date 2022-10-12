@@ -28,16 +28,78 @@ class HomePage extends StatelessWidget {
             title: 'Leagues',
             onTap: () {},
           ),
-          LeagueCard(
-            image: 'assets/images/landing_images/logo.png',
-            onTap: () {},
-            title: 'Premier League',
+          Stack(
+            alignment: AlignmentDirectional.center,
+            children: [
+              LeagueCard(
+                image: 'assets/images/landing_images/logo.png',
+                onTap: () {},
+                title: 'TopBantz League',
+              ),
+              Container(
+                height: 68.h,
+                width: 319.w,
+                decoration: BoxDecoration(
+                  color: CustomColors.foreGroundColor.withOpacity(0.9),
+                  borderRadius: BorderRadius.circular(Design.radius),
+                ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(
+                          left: 28.w, right: 28.w, top: 20.h, bottom: 13.h),
+                      child: const LinearProgressIndicator(
+                        backgroundColor: CustomColors.backGroundColor,
+                        color: CustomColors.textYellowColor,
+                      ),
+                    ),
+                    CustomText(
+                      text: 'Coming Soon',
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w400,
+                      color: CustomColors.textWhiteColor,
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
           HomeTabBar(
             title: 'Battle Room',
             onTap: () {},
           ),
-          const BattleRoomCard(),
+          Stack(
+            alignment: AlignmentDirectional.center,
+            children: [
+              const BattleRoomCard(),
+              Container(
+                height: 68.h,
+                width: 319.w,
+                decoration: BoxDecoration(
+                  color: CustomColors.foreGroundColor.withOpacity(0.9),
+                  borderRadius: BorderRadius.circular(Design.radius),
+                ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(
+                          left: 28.w, right: 28.w, top: 20.h, bottom: 13.h),
+                      child: const LinearProgressIndicator(
+                        backgroundColor: CustomColors.backGroundColor,
+                        color: CustomColors.textYellowColor,
+                      ),
+                    ),
+                    CustomText(
+                      text: 'Coming Soon',
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w400,
+                      color: CustomColors.textWhiteColor,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
           HomeTabBar(
             title: 'Lobbies',
             onTap: () {},
@@ -373,7 +435,7 @@ class BattleRoomCard extends StatelessWidget {
   }
 }
 
-class Lobbies extends StatelessWidget {
+class Lobbies extends StatefulWidget {
   Lobbies({Key? key, required UserRepository userRepository})
       : _userRepository = userRepository,
         super(key: key);
@@ -381,53 +443,63 @@ class Lobbies extends StatelessWidget {
   UserRepository _userRepository;
 
   @override
+  State<Lobbies> createState() => _LobbiesState();
+}
+
+class _LobbiesState extends State<Lobbies> {
+  @override
+  initState() {
+    super.initState();
+    streamer();
+  }
+
+  List<QueryDocumentSnapshot<Map<String, dynamic>>> x = [];
+
+  streamer() {
+    var snap = FirebaseFirestore.instance
+        .collection('groups')
+        .snapshots()
+        .listen((event) {
+      setState(() {
+        x = event.docs;
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Wrap(
-      alignment: WrapAlignment.center,
-      runSpacing: 13.h,
+      alignment: WrapAlignment.start,
       spacing: 13.w,
+      runSpacing: 13.h,
       children: [
-        PaginateFirestore(
-          //item builder type is compulsory.
-          itemBuilder: (context, documentSnapshots, index) {
-            final data = documentSnapshots[index].data() as Map?;
-            return InkWell(
-              splashColor: CustomColors.transparentColor,
-              onTap: () {
-                Get.to(
-                  () => GroupChatScreen(
-                    groupChatId: '',
-                    groupName: '',
-                    userModel: UserRepository.userModel,
-                  ),
-                );
-              },
-              child: Container(
-                height: 71.h,
-                width: 71.w,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(Design.radius),
-                  color: CustomColors.foreGroundColor,
-                  image: const DecorationImage(
-                    fit: BoxFit.contain,
-                    image: AssetImage(
-                      'assets/images/leagues/barcelona.png',
-                    ),
+        for (int i = 0; i < x.length; i++)
+          InkWell(
+            splashColor: CustomColors.transparentColor,
+            onTap: () {
+              Get.to(
+                () => GroupChatScreen(
+                  groupChatId: x[i]['uid'],
+                  groupName: '',
+                  userModel: UserRepository.userModel,
+                ),
+              );
+            },
+            child: Container(
+              height: 71.h,
+              width: 71.w,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(Design.radius),
+                color: CustomColors.textYellowColor,
+                image: const DecorationImage(
+                  fit: BoxFit.contain,
+                  image: AssetImage(
+                    'assets/images/leagues/barcelona.png',
                   ),
                 ),
               ),
-            );
-          },
-          // orderBy is compulsory to enable pagination
-          query: FirebaseFirestore.instance
-              .collection('groups')
-              .orderBy('time', descending: true),
-          //Change types accordingly
-          itemBuilderType: PaginateBuilderType.listView,
-          // to fetch real-time data
-          isLive: true,
-          reverse: true,
-        ),
+            ),
+          ),
       ],
     );
   }

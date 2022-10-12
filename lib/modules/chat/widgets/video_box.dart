@@ -75,7 +75,7 @@ class _VideoBoxState extends State<VideoBox> {
                   ),
                   child: CustomText(
                     alignment: TextAlign.end,
-                    text: userModel.userName,
+                    text:  widget.messageModel.send_by,
                     color: CustomColors.textMediumColor,
                     fontSize: 12.sp,
                   ),

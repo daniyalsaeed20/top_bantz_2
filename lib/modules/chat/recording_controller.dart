@@ -6,10 +6,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_sound_lite/public/flutter_sound_recorder.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:top_bantz_2/constants/shared_prefs.dart';
 import 'package:top_bantz_2/models/chat_room_model.dart';
 import 'package:top_bantz_2/modules/chat/sound_recorder.dart';
 import 'package:uuid/uuid.dart';
+
+import '../../repositories/user_repository.dart';
 
 class RecordingController extends GetxController {
   /* -------------------------------------------------------------------------- */
@@ -80,7 +81,6 @@ class RecordingController extends GetxController {
   }
 
   Future uploadAudioForGroup(audioFile, groupChatId) async {
-    var userDataModel = await MySharedPrefrences.getUserData();
     String fileName = Uuid().v1();
     User? user = _auth.currentUser;
 
@@ -88,7 +88,7 @@ class RecordingController extends GetxController {
     int status = 1;
 
     Map<String, dynamic> chatData = {
-      "sendBy": userDataModel.userName,
+      "sendBy": UserRepository.userModel.userName,
       "message": 'null',
       "type": "aud",
       "time": FieldValue.serverTimestamp(),

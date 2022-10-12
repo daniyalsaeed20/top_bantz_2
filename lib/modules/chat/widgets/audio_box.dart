@@ -80,7 +80,7 @@ class _AudioBoxState extends State<AudioBox> {
             ),
             child: CustomText(
               alignment: TextAlign.end,
-              text: userModel.userName,
+              text: widget.messageModel.send_by,
               color: CustomColors.textMediumColor,
               fontSize: 12.sp,
             ),
@@ -101,7 +101,7 @@ class _AudioBoxState extends State<AudioBox> {
               width: 250.w,
               decoration: BoxDecoration(
                 color: widget.messageModel.send_by != userModel.userName
-                    ? CustomColors.backGroundColor
+                    ? CustomColors.textWhiteColor
                     : CustomColors.themeColor,
                 boxShadow: [
                   BoxShadow(
@@ -206,7 +206,7 @@ class _AudioBoxState extends State<AudioBox> {
                           ),
                       ],
                     ),
-                    Spacer(),
+                    // Spacer(),
                     Row(
                       children: [
                         if (url == 'null')
