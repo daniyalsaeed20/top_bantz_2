@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:top_bantz_2/constants/custom_colors.dart';
 import 'package:top_bantz_2/constants/design.dart';
@@ -216,8 +217,22 @@ class _UiState extends State<Ui> {
                       CustomButton(
                           text: 'Continue',
                           onTap: () {
-                            if (_signupKey.currentState!.validate()) {
-                              _authController.attemptRegistration.value = true;
+                            if (passwordController.text ==
+                                confirmPasswordController.text) {
+                              if (_signupKey.currentState!.validate()) {
+                                _authController.attemptRegistration.value =
+                                    true;
+                              }
+                            } else {
+                              Fluttertoast.showToast(
+                                msg: "Passwords do not match",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: CustomColors.textYellowColor,
+                                textColor: Colors.black,
+                                fontSize: 16.0,
+                              );
                             }
                           }),
                     if (_authController.attemptRegistration.value)
@@ -270,7 +285,7 @@ class _UiState extends State<Ui> {
     required String contactNumber,
     required String password,
   }) {
-     UserRepository.userModel = UserModel(
+    UserRepository.userModel = UserModel(
       contactNumber: contactNumber,
       dateOfBirth: dateOfBirth,
       email: email,
