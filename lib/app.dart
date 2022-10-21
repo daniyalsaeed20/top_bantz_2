@@ -38,16 +38,16 @@ class App extends StatelessWidget {
             //     userServices: UserServices(),
             //   ),
             // ),
-            home: s.Settings(
-              userRepository: UserRepository(
-                userServices: UserServices(),
-              ),
-            )
-            // home: AuthenticationHome(
+            // home: s.Settings(
             //   userRepository: UserRepository(
             //     userServices: UserServices(),
             //   ),
-            // ),
+            // )
+            home: AuthenticationHome(
+              userRepository: UserRepository(
+                userServices: UserServices(),
+              ),
+            ),
             );
       },
     );
