@@ -57,111 +57,133 @@ class _VideoBoxState extends State<VideoBox> {
     return GetBuilder<MessageController>(
         init: MessageController(),
         builder: (messageController) {
-          return Column(
-            crossAxisAlignment:
-                widget.messageModel.send_by == userModel.userName
-                    ? CrossAxisAlignment.end
-                    : CrossAxisAlignment.start,
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (widget.messageModel.send_by != userModel.userName)
-                Padding(
-                  padding: EdgeInsets.only(
-                    left: widget.messageModel.send_by == userModel.userName
-                        ? 48
-                        : 16,
-                    right: widget.messageModel.send_by == userModel.userName
-                        ? 16
-                        : 48,
-                  ),
-                  child: CustomText(
-                    alignment: TextAlign.end,
-                    text:  widget.messageModel.send_by,
-                    color: CustomColors.textMediumColor,
-                    fontSize: 12.sp,
+                Container(
+                  height: 40.h,
+                  width: 40.w,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.r),
+                    color: CustomColors.textYellowColor,
+                    image: DecorationImage(
+                      fit: BoxFit.fill,
+                      image: NetworkImage(
+                        widget.messageModel.image == ''
+                            ? 'https://firebasestorage.googleapis.com/v0/b/top-bantz-db7af.appspot.com/o/users%2F0YcMUfXjw9S6hr2T5GPNWUGY5Bj1%2Fimage%2F0YcMUfXjw9S6hr2T5GPNWUGY5Bj1-1665643279140?alt=media&token=b4c227a3-ca48-4ded-ac6a-bac088d0e726'
+                            : widget.messageModel.image,
+                      ),
+                    ),
                   ),
                 ),
-              Align(
-                alignment: widget.messageModel.send_by == userModel.userName
-                    ? Alignment.centerRight
-                    : Alignment.centerLeft,
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left: widget.messageModel.send_by == userModel.userName
-                        ? 48
-                        : 16,
-                    right: widget.messageModel.send_by == userModel.userName
-                        ? 16
-                        : 48,
-                    top: 8,
-                  ),
-                  child: Container(
-                    height: 200.h,
-                    width: 300.w,
-                    decoration: BoxDecoration(
-                      color: CustomColors.backGroundColor,
-                      boxShadow: [
-                        BoxShadow(
-                          color: CustomColors.blackColor.withOpacity(0.5),
-                          blurRadius: 5,
-                          spreadRadius: 3,
-                          offset: const Offset(0, 3),
-                        )
-                      ],
-                      border: Border.all(
-                        width: 2,
-                        color: CustomColors.textMediumColor,
+              Column(
+                crossAxisAlignment:
+                    widget.messageModel.send_by == userModel.userName
+                        ? CrossAxisAlignment.end
+                        : CrossAxisAlignment.start,
+                children: [
+                  if (widget.messageModel.send_by != userModel.userName)
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: widget.messageModel.send_by == userModel.userName
+                            ? 48.w
+                            : 16.w,
+                        right: widget.messageModel.send_by == userModel.userName
+                            ? 16.w
+                            : 48.w,
                       ),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(8.r),
-                        topRight: Radius.circular(8.r),
-                        bottomLeft:
-                            widget.messageModel.send_by == userModel.userName
+                      child: CustomText(
+                        alignment: TextAlign.end,
+                        text: widget.messageModel.send_by,
+                        color: CustomColors.textMediumColor,
+                        fontSize: 12.sp,
+                      ),
+                    ),
+                  Align(
+                    alignment: widget.messageModel.send_by == userModel.userName
+                        ? Alignment.centerRight
+                        : Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        left: widget.messageModel.send_by == userModel.userName
+                            ? 48.w
+                            : 16.w,
+                        right: widget.messageModel.send_by == userModel.userName
+                            ? 16.w
+                            : 48.w,
+                        top: 8,
+                      ),
+                      child: Container(
+                        height: 200.h,
+                        width: 250.w,
+                        decoration: BoxDecoration(
+                          color: CustomColors.backGroundColor,
+                          boxShadow: [
+                            BoxShadow(
+                              color: CustomColors.blackColor.withOpacity(0.5),
+                              blurRadius: 5,
+                              spreadRadius: 3,
+                              offset: const Offset(0, 3),
+                            )
+                          ],
+                          border: Border.all(
+                            width: 2,
+                            color: CustomColors.textMediumColor,
+                          ),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(8.r),
+                            topRight: Radius.circular(8.r),
+                            bottomLeft: widget.messageModel.send_by ==
+                                    userModel.userName
                                 ? Radius.circular(8.r)
                                 : Radius.circular(0.r),
-                        bottomRight:
-                            widget.messageModel.send_by == userModel.userName
+                            bottomRight: widget.messageModel.send_by ==
+                                    userModel.userName
                                 ? Radius.circular(0.r)
                                 : Radius.circular(8.r),
+                          ),
+                        ),
+                        child:
+                            //  messageController.videoUrl != 'null'
+                            //     ?
+                            Chewie(
+                          controller: ChewieController(
+                            allowFullScreen: true,
+                            errorBuilder: (context, error) => '' != ""
+                                ? InkWell(
+                                    onTap: () => setState(() {}),
+                                    child: const Icon(Icons.refresh))
+                                : const Icon(Icons.error),
+                            showControls: true,
+                            videoPlayerController: controller,
+                            autoPlay: false,
+                            looping: false,
+                            hideControlsTimer: const Duration(seconds: 1),
+                          ),
+                        ),
+                        // : Center(child: CircularProgressIndicator()),
                       ),
                     ),
-                    child:
-                        //  messageController.videoUrl != 'null'
-                        //     ?
-                        Chewie(
-                      controller: ChewieController(
-                        allowFullScreen: true,
-                        errorBuilder: (context, error) => '' != ""
-                            ? InkWell(
-                                onTap: () => setState(() {}),
-                                child: const Icon(Icons.refresh))
-                            : const Icon(Icons.error),
-                        showControls: true,
-                        videoPlayerController: controller,
-                        autoPlay: false,
-                        looping: false,
-                        hideControlsTimer: const Duration(seconds: 1),
-                      ),
-                    ),
-                    // : Center(child: CircularProgressIndicator()),
                   ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  bottom: 16,
-                  left: widget.messageModel.send_by == userModel.userName
-                      ? 48
-                      : 16,
-                  right: widget.messageModel.send_by == userModel.userName
-                      ? 16
-                      : 48,
-                ),
-                child: CustomText(
-                  alignment: TextAlign.end,
-                  text: dateString,
-                  color: CustomColors.textMediumColor,
-                  fontSize: 12.sp,
-                ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      bottom: 16.w,
+                      left: widget.messageModel.send_by == userModel.userName
+                          ? 48.w
+                          : 16.w,
+                      right: widget.messageModel.send_by == userModel.userName
+                          ? 16.w
+                          : 48.w,
+                    ),
+                    child: CustomText(
+                      alignment: TextAlign.end,
+                      text: dateString,
+                      color: CustomColors.textMediumColor,
+                      fontSize: 12.sp,
+                    ),
+                  ),
+                ],
               ),
             ],
           );

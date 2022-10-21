@@ -4,6 +4,12 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <queries>
+    <intent>
+      <action android:name="android.intent.action.SENDTO" />
+      <data android:scheme="mailto" />
+    </intent>
+  </queries>
    <application
         android:label="top_bantz_2"
         android:name="${applicationName}"

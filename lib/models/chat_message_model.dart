@@ -6,9 +6,11 @@ class ChatMessageModel {
     required this.message,
     required this.send_by,
     required this.time,
+    this.image = '',
   });
   String send_by;
   String type;
   String message;
   Timestamp time;
+  String image;
 }

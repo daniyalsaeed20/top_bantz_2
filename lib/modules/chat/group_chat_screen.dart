@@ -20,6 +20,7 @@ import 'package:top_bantz_2/modules/chat/widgets/loader_box.dart';
 import 'package:top_bantz_2/modules/chat/widgets/multi_media_options.dart';
 import 'package:top_bantz_2/modules/chat/widgets/text_bubble.dart';
 import 'package:top_bantz_2/modules/chat/widgets/video_box.dart';
+import 'package:top_bantz_2/repositories/user_repository.dart';
 
 class GroupChatScreen extends StatefulWidget {
   GroupChatScreen({
@@ -143,6 +144,7 @@ class Body extends StatelessWidget {
                               send_by: data['sendBy'],
                               type: data['type'],
                               time: data['time'] ?? Timestamp(0, 0),
+                              image: data['image']??'',
                             ),
                             userModel: userModel,
                           );
@@ -150,6 +152,7 @@ class Body extends StatelessWidget {
                         return ChatUiSelector(
                           userModel: userModel,
                           chatMessageModel: ChatMessageModel(
+                            image: data['image']??'',
                             message: data['message'],
                             send_by: data['sendBy'],
                             type: data['type'],

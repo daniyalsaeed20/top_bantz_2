@@ -1,17 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
-  UserModel({
-    this.userName = '',
-    this.email = '',
-    this.dateOfBirth = '',
-    this.contactNumber = '',
-    this.userId = '',
-    this.groupId = '',
-    this.image = '',
-    this.isPremium = false,
-    this.points = 0
-  });
+  UserModel(
+      {this.userName = '',
+      this.email = '',
+      this.dateOfBirth = '',
+      this.contactNumber = '',
+      this.userId = '',
+      this.groupId = '',
+      this.image = '',
+      this.isPremium = false,
+      this.address = '',
+      this.points = 0});
 
   String userName;
   String email;
@@ -20,6 +20,7 @@ class UserModel {
   String userId;
   String groupId;
   String image;
+  String address;
   bool isPremium;
 
   int points;
@@ -35,6 +36,7 @@ class UserModel {
       image: doc['image'],
       isPremium: doc['isPremium'],
       points: doc['points'],
+      address: doc['address']??'',
     );
   }
 
@@ -49,6 +51,7 @@ class UserModel {
       "image": image,
       "isPremium": isPremium,
       "points": points,
+      "address": address,
     };
   }
 }

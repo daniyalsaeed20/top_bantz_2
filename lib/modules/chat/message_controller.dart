@@ -43,6 +43,7 @@ class MessageController extends GetxController {
           "message": sendMessageController.text,
           "type": "text",
           "time": FieldValue.serverTimestamp(),
+          'image': UserRepository.userModel.image,
         };
 
         sendMessageController.clear();
@@ -65,12 +66,12 @@ class MessageController extends GetxController {
     String video = "vid";
     int status = 1;
 
-
     Map<String, dynamic> chatData = {
       "sendBy": UserRepository.userModel.userName,
       "message": 'null',
       "type": "vid",
       "time": FieldValue.serverTimestamp(),
+      'image': UserRepository.userModel.image,
     };
 
     var docId;
@@ -120,12 +121,12 @@ class MessageController extends GetxController {
     String img = "img";
     int status = 1;
 
-
     Map<String, dynamic> chatData = {
       "sendBy": UserRepository.userModel.userName,
       "message": 'null',
       "type": "img",
       "time": FieldValue.serverTimestamp(),
+      'image': UserRepository.userModel.image,
     };
 
     var docId;

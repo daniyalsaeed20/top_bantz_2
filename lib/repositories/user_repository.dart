@@ -76,6 +76,13 @@ class UserRepository {
     return userModel;
   }
 
+  updateUserData() async {
+    await _userServices.updateUserDocument(
+        toMap: userModel.toMap(),
+        userId: FirebaseAuth.instance.currentUser!.uid);
+    await getUserDocument();
+  }
+
   uploadImage({
     required String image,
   }) async {

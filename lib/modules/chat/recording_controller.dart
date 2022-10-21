@@ -92,6 +92,7 @@ class RecordingController extends GetxController {
       "message": 'null',
       "type": "aud",
       "time": FieldValue.serverTimestamp(),
+      'image': UserRepository.userModel.image,
     };
 
     var docId;
